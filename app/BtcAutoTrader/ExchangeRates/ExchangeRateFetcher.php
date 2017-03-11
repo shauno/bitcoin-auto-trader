@@ -19,25 +19,36 @@ class ExchangeRateFetcher
 
     /**
      * Get the exchange rate of a currency pair via Yahoo API
-     * @todo: Handle errors and unexpected responses
      *
      * @param ExchangeRate $exchangeRate
      * @return float
      */
     public function getRate(ExchangeRate $exchangeRate)
     {
-        $response = $this->client->get($exchangeRate->tracker_url);
+        try {
+            $response = $this->client->get($exchangeRate->getTrackerUrl());
 
-        $content = json_decode($response->getBody()->getContents());
+            $content = json_decode($response->getBody()->getContents());
 
-        foreach ($exchangeRate->getValueKey() as $key) {
-            if (preg_match('/\[([0-9]+)\]/', $key, $match)) { //looking for "[n]" syntax as an array
-                $content = $content[$match[1]];
-            } else {
-                $content = $content->$key;
+            foreach ($exchangeRate->getValueKey() as $key) {
+                if (preg_match('/\[([0-9]+)\]/', $key, $match)) { //looking for "[n]" syntax as an array
+                    if (isset($content[$match[1]])) {
+                        $content = $content[$match[1]];
+                    } else {
+                        throw new \RuntimeException('Failed to parse exchange rate response from tracker');
+                    }
+                } else {
+                    if (isset($content->$key)) {
+                        $content = $content->$key;
+                    } else {
+                        throw new \RuntimeException('Failed to parse exchange rate response from tracker');
+                    }
+                }
             }
-        }
 
-        return (float)$content;
+            return (float)$content;
+        }catch (\Exception $e) {
+            throw new \RuntimeException('Failed to connect to exchange rate tracker');
+        }
     }
 }

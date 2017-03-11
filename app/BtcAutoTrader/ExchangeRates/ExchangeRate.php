@@ -18,6 +18,17 @@ use Illuminate\Database\Eloquent\Model;
 class ExchangeRate extends Model
 {
     /**
+     * The attributes excluded from the model's JSON form.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'tracker_url',
+        'value_key',
+        'created_at'
+    ];
+
+    /**
      * @return integer
      */
     public function getId()
