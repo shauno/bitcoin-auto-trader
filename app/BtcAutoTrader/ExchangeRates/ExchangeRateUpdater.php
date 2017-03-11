@@ -2,16 +2,24 @@
 
 namespace BtcAutoTrader\ExchangeRates;
 
+use BtcAutoTrader\Errors\ErrorMessageTrait;
+use Illuminate\Support\MessageBag;
+
 class ExchangeRateUpdater
 {
+    use ErrorMessageTrait;
+
     protected $exchangeRateFetcher;
     protected $exchangeRateRepository;
 
+    /**
+     * @param ExchangeRateFetcher $exchangeRateFetcher
+     * @param ExchangeRateRepositoryInterface $exchangeRateRepository
+     */
     public function __construct(
         ExchangeRateFetcher $exchangeRateFetcher,
         ExchangeRateRepositoryInterface $exchangeRateRepository
     ) {
-    
         $this->exchangeRateFetcher = $exchangeRateFetcher;
         $this->exchangeRateRepository = $exchangeRateRepository;
     }
@@ -22,16 +30,18 @@ class ExchangeRateUpdater
      *
      * @param $from_iso
      * @param $to_iso
-     * @return bool
+     * @return ExchangeRate
+     * @throws \RuntimeException
      */
-    public function update($from_iso, $to_iso)
+    public function update($from_iso, $to_iso) : ?ExchangeRate
     {
         if (!$exchangeRate = $this->exchangeRateRepository->find($from_iso, $to_iso)) {
-            return false;
+            $this->setErrors(new MessageBag(['from_iso_to_iso' => 'invalid']));
+            return null;
         }
 
         if (!$rate = $this->exchangeRateFetcher->getRate($from_iso, $to_iso)) {
-            return false;
+            throw new \RuntimeException('Failed to fetch latest rate from 3rd party service');
         }
 
         $exchangeRate->setRate($rate);

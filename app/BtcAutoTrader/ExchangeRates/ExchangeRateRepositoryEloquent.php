@@ -22,12 +22,12 @@ class ExchangeRateRepositoryEloquent implements ExchangeRateRepositoryInterface
     /**
      * @param ExchangeRate $exchangeRate
      * @return ExchangeRate
-     * @throws RuntimeException
+     * @throws \LogicException
      */
     public function update(ExchangeRate $exchangeRate) : ExchangeRate
     {
         if (!$exchangeRate->getId()) {
-            throw new RuntimeException('Call to update() with model without and id');
+            throw new \LogicException('Call to update() with model without and id');
         }
 
         $exchangeRate->save();
