@@ -40,7 +40,7 @@ class ExchangeRateUpdater
             return null;
         }
 
-        if (!$rate = $this->exchangeRateFetcher->getRate($from_iso, $to_iso)) {
+        if (!$rate = $this->exchangeRateFetcher->getRate($exchangeRate)) {
             throw new \RuntimeException('Failed to fetch latest rate from 3rd party service');
         }
 

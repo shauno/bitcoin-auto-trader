@@ -20,7 +20,7 @@ class ExchangeRatesController
         try {
             if ($exchangeRate = $exchangeRateUpdater->update($from_iso, $to_iso)) {
                 return response($exchangeRate);
-            }else{
+            } else {
                 return response($exchangeRateUpdater->getErrors(), 400);
             }
         }catch (\Exception $e) {

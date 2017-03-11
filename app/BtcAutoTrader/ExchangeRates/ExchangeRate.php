@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string from_iso
  * @property string to_iso
  * @property float rate
+ * @property string tracker_url
+ * @property string value_key
  * @property string created_at
  * @property string updated_at
  */
@@ -21,6 +23,22 @@ class ExchangeRate extends Model
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTrackerUrl()
+    {
+        return $this->tracker_url;
+    }
+
+    /**
+     * @return array
+     */
+    public function getValueKey()
+    {
+        return explode('.', $this->value_key);
     }
 
     /**
