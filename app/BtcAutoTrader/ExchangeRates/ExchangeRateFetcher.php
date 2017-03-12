@@ -47,7 +47,7 @@ class ExchangeRateFetcher
             }
 
             return (float)$content;
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw new \RuntimeException('Failed to connect to exchange rate tracker');
         }
     }

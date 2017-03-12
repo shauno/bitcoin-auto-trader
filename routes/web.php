@@ -16,6 +16,7 @@ $app->get('/', function () use ($app) {
 });
 
 $app->get('/api/v1/exchange-rates/{from_iso}/{to_iso}', ['uses' => 'ExchangeRatesController@update']);
+$app->get('/api/v1/auto-trade/', ['uses' => 'AutoTraderController@trade']);
 
 $app->get('accounts', function() {
 	$ch = curl_init();

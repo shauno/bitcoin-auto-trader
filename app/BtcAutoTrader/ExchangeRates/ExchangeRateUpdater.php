@@ -2,10 +2,11 @@
 
 namespace BtcAutoTrader\ExchangeRates;
 
+use BtcAutoTrader\Errors\ErrorMessagesInterface;
 use BtcAutoTrader\Errors\ErrorMessageTrait;
 use Illuminate\Support\MessageBag;
 
-class ExchangeRateUpdater
+class ExchangeRateUpdater implements ErrorMessagesInterface
 {
     use ErrorMessageTrait;
 

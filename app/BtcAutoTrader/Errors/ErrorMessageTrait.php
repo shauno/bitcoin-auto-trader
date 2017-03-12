@@ -25,6 +25,7 @@ trait ErrorMessageTrait
      */
     protected function addError(string $key, string $message)
     {
+        $this->errors = $this->errors ?? new MessageBag();
         $this->errors->add($key, $message);
     }
 

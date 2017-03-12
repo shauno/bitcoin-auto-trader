@@ -37,6 +37,14 @@ class ExchangeRate extends Model
     }
 
     /**
+     * @return float
+     */
+    public function getRate()
+    {
+        return $this->rate;
+    }
+
+    /**
      * @return string
      */
     public function getTrackerUrl()
@@ -52,6 +60,11 @@ class ExchangeRate extends Model
         return explode('.', $this->value_key);
     }
 
+    public function getUpdatedAt()
+    {
+        return $this->updated_at;
+    }
+
     /**
      * @param float $rate
      * @return $this
@@ -60,5 +73,17 @@ class ExchangeRate extends Model
     {
         $this->rate = $rate;
         return $this;
+    }
+
+    /**
+     * Checks if the exchange rate is not stale (older than 10min), and within some reasonable bounds (not < 0)
+     *
+     * @return bool
+     */
+    public function sanityCheck()
+    {
+        $cachedTime = time() - strtotime($this->getUpdatedAt());
+
+        return $cachedTime < 600 && is_numeric($this->getRate()) && $this->getRate() > 0;
     }
 }
