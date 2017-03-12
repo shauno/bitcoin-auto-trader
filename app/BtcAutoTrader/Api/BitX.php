@@ -92,7 +92,20 @@ class BitX implements ErrorMessagesInterface
                     'counter_volume' => round($amount, 2),
                 ]
             ];
-            return $this->client->post('https://api.mybitx.com/api/1/marketorder', $options);
+            $order = $this->client->post('https://api.mybitx.com/api/1/marketorder', $options);
+
+            return $order;
+        } catch (\Exception $e) {
+            $this->addError('api', $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getOrderDetails($bitx_order_id)
+    {
+        try {
+            $options = ['auth' => $this->auth];
+            return $this->client->get('https://api.mybitx.com/api/1/orders/'.$bitx_order_id, $options);
         } catch (\Exception $e) {
             $this->addError('api', $e->getMessage());
             return false;

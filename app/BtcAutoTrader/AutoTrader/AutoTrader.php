@@ -7,6 +7,7 @@ use BtcAutoTrader\Errors\ErrorMessagesInterface;
 use BtcAutoTrader\Errors\ErrorMessageTrait;
 use BtcAutoTrader\ExchangeRates\ExchangeRate;
 use BtcAutoTrader\ExchangeRates\ExchangeRateRepositoryInterface;
+use BtcAutoTrader\Orders\OrderRepositoryInterface;
 
 class AutoTrader implements ErrorMessagesInterface
 {
@@ -14,14 +15,17 @@ class AutoTrader implements ErrorMessagesInterface
 
     protected $exchangeRateRepository;
     protected $bitXApi;
+    protected $orderRepository;
 
     public function __construct(
         ExchangeRateRepositoryInterface $exchangeRateRepository,
-        BitX $bitXApi
+        BitX $bitXApi,
+        OrderRepositoryInterface $orderRepository
 
     ) {
         $this->exchangeRateRepository = $exchangeRateRepository;
         $this->bitXApi = $bitXApi;
+        $this->orderRepository = $orderRepository;
     }
 
     public function trade()
@@ -51,8 +55,12 @@ class AutoTrader implements ErrorMessagesInterface
                 return false;
             }
 
+            $orderModel = $this->orderRepository->create($order->order_id);
+            $orderDetails = $this->bitXApi->getOrderDetails($order->order_id);
+            $orderModel = $this->orderRepository->update($order->order_id, $orderDetails);
 
 
+            dd($orderModel);
         }
     }
 
