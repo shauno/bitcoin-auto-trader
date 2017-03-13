@@ -33,4 +33,21 @@ class ExchangeRateRepositoryEloquent implements ExchangeRateRepositoryInterface
         $exchangeRate->save();
         return $exchangeRate;
     }
+
+    /**
+     * @param ExchangeRate $exchangeRate
+     * @return ExchangeRateLog
+     */
+    public function log(ExchangeRate $exchangeRate) : ExchangeRateLog
+    {
+        $log = (new ExchangeRateLog())->fill([
+            'from_iso' => $exchangeRate->getFromIso(),
+            'to_iso' => $exchangeRate->getToIso(),
+            'rate' => $exchangeRate->getRate(),
+        ]);
+
+        $log->save();
+
+        return $log;
+    }
 }

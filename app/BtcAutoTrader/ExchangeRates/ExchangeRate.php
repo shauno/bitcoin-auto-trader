@@ -37,6 +37,22 @@ class ExchangeRate extends Model
     }
 
     /**
+     * @return string
+     */
+    public function getFromIso()
+    {
+        return $this->from_iso;
+    }
+
+    /**
+     * @return string
+     */
+    public function getToIso()
+    {
+        return $this->to_iso;
+    }
+
+    /**
      * @return float
      */
     public function getRate()

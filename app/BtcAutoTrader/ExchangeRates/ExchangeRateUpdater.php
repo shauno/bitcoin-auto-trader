@@ -45,6 +45,7 @@ class ExchangeRateUpdater implements ErrorMessagesInterface
 
         $exchangeRate->setRate($rate);
 
+        $this->exchangeRateRepository->log($exchangeRate);
         return $this->exchangeRateRepository->update($exchangeRate);
     }
 }

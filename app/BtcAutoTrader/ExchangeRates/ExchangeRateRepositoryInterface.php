@@ -16,4 +16,10 @@ interface ExchangeRateRepositoryInterface
      * @return ExchangeRate
      */
     public function update(ExchangeRate $exchangeRate) : ExchangeRate;
+
+    /**
+     * @param ExchangeRate $exchangeRate
+     * @return mixed
+     */
+    public function log(ExchangeRate $exchangeRate) : ExchangeRateLog;
 }
