@@ -42,25 +42,40 @@ class AutoTrader implements ErrorMessagesInterface
 
         $percentDifference = $this->calculateDifference($xbtUsd, $xbtZar, $usdZar);
 
-        if (1==1 || $percentDifference <= 0.03) { //buy buy buy!
-            //get my zat balance
+        if ($percentDifference <= 0.03) { //buy buy buy!
+            dd('NO, not buying now!');
+            //get my zar balance
             if (($zarBalance = $this->bitXApi->getAccountBalance('ZAR')) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
                 return false;
             }
 
-            //get the order book so we can see what ask prices are around
-            if (($order = $this->bitXApi->placeMarketOrder('XBT', 'ZAR', 2 /*$zarBalance*/)) === false) {
+            //place market order (instantly filled, not ask/bid)
+            if (($order = $this->bitXApi->placeBuyMarketOrder('XBT', 'ZAR', 2 /*$zarBalance*/)) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
                 return false;
             }
 
-            $orderModel = $this->orderRepository->create($order->order_id);
+            //TODO, clean this shit up yo :smh
+            $orderModel = $this->orderRepository->create($order->order_id, 'BUY');
             $orderDetails = $this->bitXApi->getOrderDetails($order->order_id);
             $orderModel = $this->orderRepository->update($order->order_id, $orderDetails);
+        } else if ($percentDifference >= 0.06) { //sell sell sell!
+            //get my xbt balance
+            if (($xbtBalance = $this->bitXApi->getAccountBalance('XBT')) === false) {
+                $this->setErrors($this->bitXApi->getErrors());
+                return false;
+            }
 
+            //place market order (instantly filled, not ask/bid)
+            if (($order = $this->bitXApi->placeSellMarketOrder('XBT', 'ZAR', 0.0005 /*$zarBalance*/)) === false) {
+                $this->setErrors($this->bitXApi->getErrors());
+                return false;
+            }
 
-            dd($orderModel);
+            $orderModel = $this->orderRepository->create($order->order_id, 'SELL');
+            $orderDetails = $this->bitXApi->getOrderDetails($order->order_id);
+            $orderModel = $this->orderRepository->update($order->order_id, $orderDetails);
         }
     }
 

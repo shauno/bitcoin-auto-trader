@@ -14,12 +14,12 @@ class CreateOrdersTable extends Migration
     public function up()
     {
         Schema::create('orders', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('bitx_order_id', 255);
+            $table->increments('id'); //maybe this should be removed and `order_id` should be set as the primary key
+            $table->string('order_id', 255);
             $table->integer('creation_timestamp', false, true);
             $table->integer('expiration_timestamp', false, true);
             $table->integer('completed_timestamp', false, true);
-            $table->enum('type', ['ASK', 'BID', 'BUY']);
+            $table->enum('type', ['BUY', 'SELL']);
             $table->string('state');
             $table->decimal('limit_price', 16, 8);
             $table->decimal('limit_volume', 16, 8);

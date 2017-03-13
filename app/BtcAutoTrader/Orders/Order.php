@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-        'bitx_order_id',
+        'order_id',
         'type',
     ];
 }

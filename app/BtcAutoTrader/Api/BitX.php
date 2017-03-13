@@ -81,7 +81,7 @@ class BitX implements ErrorMessagesInterface
      * @param float $amount
      * @return array|bool
      */
-    public function placeMarketOrder(string $from_iso, string $to_iso, float $amount)
+    public function placeBuyMarketOrder(string $from_iso, string $to_iso, float $amount)
     {
         try {
             $options = [
@@ -101,11 +101,40 @@ class BitX implements ErrorMessagesInterface
         }
     }
 
-    public function getOrderDetails($bitx_order_id)
+    /**
+     * Creates a market order. A market order will immediately sell as much $from_iso as possible with the specified
+     * $amount, so you don't need to calculate the ask price you want to specify
+     *
+     * @param string $from_iso
+     * @param string $to_iso
+     * @param float $amount
+     * @return array|bool
+     */
+    public function placeSellMarketOrder(string $from_iso, string $to_iso, float $amount)
+    {
+        try {
+            $options = [
+                'auth' => $this->auth,
+                'form_params' => [
+                    'pair' => $from_iso.$to_iso,
+                    'type' => 'SELL',
+                    'base_volume' => $amount,
+                ]
+            ];
+            $order = $this->client->post('https://api.mybitx.com/api/1/marketorder', $options);
+
+            return $order;
+        } catch (\Exception $e) {
+            $this->addError('api', $e->getMessage());
+            return false;
+        }
+    }
+
+    public function getOrderDetails($order_id)
     {
         try {
             $options = ['auth' => $this->auth];
-            return $this->client->get('https://api.mybitx.com/api/1/orders/'.$bitx_order_id, $options);
+            return $this->client->get('https://api.mybitx.com/api/1/orders/'.$order_id, $options);
         } catch (\Exception $e) {
             $this->addError('api', $e->getMessage());
             return false;

@@ -5,15 +5,15 @@ namespace BtcAutoTrader\Orders;
 class OrderRepositoryEloquent implements OrderRepositoryInterface
 {
     /**
-     * @param string $bitx_order_id
+     * @param string $order_id
      * @param string $type
      * @return Order
      */
-    public function create(string $bitx_order_id, $type = 'BUY'): Order
+    public function create(string $order_id, string $type): Order
     {
         $order = new Order();
         $order->fill([
-            'bitx_order_id' => $bitx_order_id,
+            'order_id' => $order_id,
             'type' => $type,
         ])->save();
 
@@ -21,13 +21,13 @@ class OrderRepositoryEloquent implements OrderRepositoryInterface
     }
 
     /**
-     * @param string $bitx_order_id
+     * @param string $order_id
      * @param \stdClass $details
      * @return Order
      */
-    public function update(string $bitx_order_id, \stdClass $details): Order
+    public function update(string $order_id, \stdClass $details): Order
     {
-        $order = (new Order())->where('bitx_order_id', $bitx_order_id)->first();
+        $order = (new Order())->where('order_id', $order_id)->first();
 
         $order->creation_timestamp = $details->creation_timestamp;
         $order->expiration_timestamp = $details->expiration_timestamp;
