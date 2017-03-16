@@ -2,8 +2,6 @@
 
 namespace BtcAutoTrader\ExchangeRates;
 
-use Mockery\Exception\RuntimeException;
-
 class ExchangeRateRepositoryEloquent implements ExchangeRateRepositoryInterface
 {
     /**

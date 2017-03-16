@@ -2,14 +2,16 @@
 
 namespace BtcAutoTrader\Api;
 
-use BtcAutoTrader\Errors\ErrorMessagesInterface;
-use BtcAutoTrader\Errors\ErrorMessageTrait;
 use GuzzleHttp\Client as GuzzleClient;
 
 class Client
 {
     protected $client;
 
+    /**
+     * Client constructor.
+     * @param GuzzleClient $client
+     */
     public function __construct(GuzzleClient $client)
     {
         $this->client = $client;
