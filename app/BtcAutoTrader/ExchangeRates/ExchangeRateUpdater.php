@@ -32,7 +32,7 @@ class ExchangeRateUpdater implements ErrorMessagesInterface
      * @param $from_iso
      * @param $to_iso
      * @return ExchangeRate
-     * @throws \RuntimeException
+     * @throws \Exception
      */
     public function update($from_iso, $to_iso) : ?ExchangeRate
     {
@@ -41,11 +41,13 @@ class ExchangeRateUpdater implements ErrorMessagesInterface
             return null;
         }
 
-        $rate = $this->exchangeRateFetcher->getRate($exchangeRate);
-
-        $exchangeRate->setRate($rate);
-
-        $this->exchangeRateRepository->log($exchangeRate);
-        return $this->exchangeRateRepository->update($exchangeRate);
+        try {
+            $rate = $this->exchangeRateFetcher->getRate($exchangeRate);
+            $exchangeRate->setRate($rate);
+            $this->exchangeRateRepository->log($exchangeRate);
+            return $this->exchangeRateRepository->update($exchangeRate);
+        } catch (\Exception $e) {
+            throw $e; //wrapped in try/catch for clarity's sake
+        }
     }
 }
