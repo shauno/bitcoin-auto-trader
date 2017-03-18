@@ -18,4 +18,13 @@ interface OrderRepositoryInterface
      * @return Order
      */
     public function update(string $order_id, \stdClass $details) : Order;
+
+    /**
+     * Get the last order placed
+     *
+     * @param string $type If set only get last order of $type
+     * @return Order|null
+     */
+    public function getLastOrder(string $type = null) : ?Order;
+
 }

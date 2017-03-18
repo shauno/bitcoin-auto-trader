@@ -54,4 +54,20 @@ class OrderRepositoryEloquent implements OrderRepositoryInterface
         $order->save();
         return $order;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getLastOrder(string $type = null): ?Order
+    {
+        $order = (new Order())
+            ->orderBy('id', 'desc');
+
+        if (isset($type)) {
+            $order = $order->where('type', $type);
+        }
+
+        return $order->first();
+    }
+
 }
