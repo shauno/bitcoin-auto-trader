@@ -34,11 +34,11 @@ class ExchangeRateFetcher
     }
 
     /**
-     * @param \stdClass $json
+     * @param \stdClass|array $json
      * @param array $key
      * @return mixed
      */
-    protected function getValueFromJson(\stdClass $json, array $key)
+    protected function getValueFromJson($json, array $key)
     {
         foreach ($key as $part) {
             if (preg_match('/\[([0-9]+)\]/', $part, $match)) { //looking for "[n]" syntax as an array
