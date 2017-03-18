@@ -18,11 +18,13 @@ class ExchangeRatesController
     public function update(string $from_iso, string $to_iso, ExchangeRateUpdater $exchangeRateUpdater)
     {
         try {
-            if ($exchangeRate = $exchangeRateUpdater->update($from_iso, $to_iso)) {
-                return response($exchangeRate);
-            } else {
+            $exchangeRate = $exchangeRateUpdater->update($from_iso, $to_iso);
+
+            if ($exchangeRateUpdater->hasErrors()) {
                 return response($exchangeRateUpdater->getErrors(), 400);
             }
+
+            return response($exchangeRate);
         }catch (\Exception $e) {
             return response($e->getMessage(), 500);
         }

@@ -30,6 +30,14 @@ trait ErrorMessageTrait
     }
 
     /**
+     * @return bool
+     */
+    public function hasErrors()
+    {
+        return (bool)$this->getErrors();
+    }
+
+    /**
      * @return MessageBag
      */
     public function getErrors()
