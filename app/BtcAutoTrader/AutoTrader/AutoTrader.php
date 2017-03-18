@@ -64,11 +64,9 @@ class AutoTrader implements ErrorMessagesInterface
             $this->orderRepository->create($order->order_id, 'BUY');
             $orderDetails = $this->bitXApi->getOrderDetails($order->order_id);
             return $this->orderRepository->update($order->order_id, $orderDetails);
-        } else if ($percentDifference >= 0.06) { //sell sell sell!
-            $lastBuyOrder = $this->orderRepository->getLastOrder('BUY');
-
+        } else if ($percentDifference >= 0.06 AND $lastOrder->getType() != 'SELL') { //sell sell sell!
             //make sure the rate is not actually worse than when we bought
-            if ($xbtZar->getRate() <= $lastBuyOrder->getRate()) {
+            if ($xbtZar->getRate() <= $lastOrder->getRate()) {
                 $this->addError('rate', 'The current buy rate is worse than what was paid');
                 return null;
             }
