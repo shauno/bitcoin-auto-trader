@@ -8,10 +8,16 @@ class AutoTraderController extends Controller
 {
     public function trade(AutoTrader $autoTrader)
     {
-        if ($trade = $autoTrader->trade()) {
-            dd($trade);
-        } else {
-            dd($autoTrader->getErrors());
+        try {
+            $trade = $autoTrader->trade();
+
+            if ($autoTrader->hasErrors()) {
+                return response($autoTrader->getErrors(), 400);
+            }
+
+            return response($trade);
+        } catch (\Exception $e) {
+            return response($e->getMessage(), 500);
         }
     }
 }

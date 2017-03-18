@@ -7,6 +7,7 @@ use BtcAutoTrader\Errors\ErrorMessagesInterface;
 use BtcAutoTrader\Errors\ErrorMessageTrait;
 use BtcAutoTrader\ExchangeRates\ExchangeRate;
 use BtcAutoTrader\ExchangeRates\ExchangeRateRepositoryInterface;
+use BtcAutoTrader\Orders\Order;
 use BtcAutoTrader\Orders\OrderRepositoryInterface;
 
 class AutoTrader implements ErrorMessagesInterface
@@ -28,7 +29,10 @@ class AutoTrader implements ErrorMessagesInterface
         $this->orderRepository = $orderRepository;
     }
 
-    public function trade()
+    /**
+     * @return Order|null
+     */
+    public function trade() : ?Order
     {
         $xbtUsd = $this->exchangeRateRepository->find('XBT', 'USD');
         $xbtZar = $this->exchangeRateRepository->find('XBT', 'ZAR');
@@ -37,54 +41,54 @@ class AutoTrader implements ErrorMessagesInterface
         if (!$xbtUsd->sanityCheck() || !$xbtZar->sanityCheck() || !$usdZar->sanityCheck()) {
             //todo, more granular check and reporting
             $this->addError('exchange_rate', 'One or more exchange rates failed the sanity check');
-            return false;
+            return null;
         }
 
         $percentDifference = $this->calculateDifference($xbtUsd, $xbtZar, $usdZar);
 
         if ($percentDifference <= 0.03) { //buy buy buy!
-            dd('NO, not buying now!');
             //get my zar balance
             if (($zarBalance = $this->bitXApi->getAccountBalance('ZAR')) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
-                return false;
+                return null;
             }
 
             //place market order (instantly filled, not ask/bid)
             if (($order = $this->bitXApi->placeBuyMarketOrder('XBT', 'ZAR', 2 /*$zarBalance*/)) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
-                return false;
+                return null;
             }
 
-            //TODO, clean this shit up yo :smh
-            $orderModel = $this->orderRepository->create($order->order_id, 'BUY');
+            $this->orderRepository->create($order->order_id, 'BUY');
             $orderDetails = $this->bitXApi->getOrderDetails($order->order_id);
-            $orderModel = $this->orderRepository->update($order->order_id, $orderDetails);
+            return $this->orderRepository->update($order->order_id, $orderDetails);
         } else if ($percentDifference >= 0.06) { //sell sell sell!
             $lastBuyOrder = $this->orderRepository->getLastOrder('BUY');
 
             //make sure the rate is not actually worse than when we bought
             if ($xbtZar->getRate() <= $lastBuyOrder->getRate()) {
                 $this->addError('rate', 'The current buy rate is worse than what was paid');
-                return false;
+                return null;
             }
 
             //get my xbt balance
             if (($xbtBalance = $this->bitXApi->getAccountBalance('XBT')) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
-                return false;
+                return null;
             }
 
             //place market order (instantly filled, not ask/bid)
             if (($order = $this->bitXApi->placeSellMarketOrder('XBT', 'ZAR', 0.0005 /*$zarBalance*/)) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
-                return false;
+                return null;
             }
 
-            $orderModel = $this->orderRepository->create($order->order_id, 'SELL');
+            $this->orderRepository->create($order->order_id, 'SELL');
             $orderDetails = $this->bitXApi->getOrderDetails($order->order_id);
-            $orderModel = $this->orderRepository->update($order->order_id, $orderDetails);
+            return $this->orderRepository->update($order->order_id, $orderDetails);
         }
+
+        return null;
     }
 
     /**
