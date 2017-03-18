@@ -45,8 +45,10 @@ class AutoTrader implements ErrorMessagesInterface
         }
 
         $percentDifference = $this->calculateDifference($xbtUsd, $xbtZar, $usdZar);
+        $lastOrder = $this->orderRepository->getLastOrder();
 
-        if ($percentDifference <= 0.03) { //buy buy buy!
+        //TODO, consider only buying if price in USD is trending up. ZAR might just be selling off more aggressively and then we're buying in on the way down :(
+        if ($percentDifference <= 0.03 AND $lastOrder->getType() != 'BUY') { //buy buy buy!
             //get my zar balance
             if (($zarBalance = $this->bitXApi->getAccountBalance('ZAR')) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
@@ -54,7 +56,7 @@ class AutoTrader implements ErrorMessagesInterface
             }
 
             //place market order (instantly filled, not ask/bid)
-            if (($order = $this->bitXApi->placeBuyMarketOrder('XBT', 'ZAR', 2 /*$zarBalance*/)) === false) {
+            if (($order = $this->bitXApi->placeBuyMarketOrder('XBT', 'ZAR', 2 /*floor($zarBalance)*/)) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
                 return null;
             }

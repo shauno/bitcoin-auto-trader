@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class Order
  * @property string order_id
  * @property float rate
+ * @property string $type
  */
 class Order extends Model
 {
@@ -22,5 +23,13 @@ class Order extends Model
     public function getRate()
     {
         return $this->rate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }
