@@ -94,6 +94,11 @@ class BitX implements ErrorMessagesInterface
             ];
             $order = $this->client->post('https://api.mybitx.com/api/1/marketorder', $options);
 
+            if (isset($order->error)) {
+                $this->addError('api', $order->error);
+                return false;
+            }
+
             return $order;
         } catch (\Exception $e) {
             $this->addError('api', $e->getMessage());
@@ -122,6 +127,11 @@ class BitX implements ErrorMessagesInterface
                 ]
             ];
             $order = $this->client->post('https://api.mybitx.com/api/1/marketorder', $options);
+
+            if (isset($order->error)) {
+                $this->addError('api', $order->error);
+                return false;
+            }
 
             return $order;
         } catch (\Exception $e) {
