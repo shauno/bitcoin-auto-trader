@@ -11,35 +11,9 @@
 |
 */
 
-$app->get('/', function () use ($app) {
-    return $app->version();
-});
+$app->get('/', ['uses' => 'PageController@home']);
 
-$app->get('/api/v1/exchange-rates/{from_iso}/{to_iso}', ['uses' => 'ExchangeRatesController@update']);
-$app->get('/api/v1/auto-trade/', ['uses' => 'AutoTraderController@trade']);
+$app->get('/api/v1/exchange-rates/{from_iso}/{to_iso}', ['uses' => 'ExchangeRatesController@show']);
+$app->post('/api/v1/exchange-rates/{from_iso}/{to_iso}', ['uses' => 'ExchangeRatesController@update']);
 
-$app->get('accounts', function() {
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'https://api.mybitx.com/api/1/balance');
-	curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-	curl_setopt($ch, CURLOPT_USERPWD, env('BITX_KEY').":".env('BITX_SECRET'));
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	$data = curl_exec($ch);
-	curl_close($ch);
-
-	return $data;
-});
-
-$app->get('create-account', function() {
-//	$ch = curl_init();
-//	curl_setopt($ch, CURLOPT_URL, 'https://api.mybitx.com/api/1/accounts');
-//	curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC ) ;
-//	curl_setopt($ch, CURLOPT_USERPWD, env('BITX_KEY').":".env('BITX_SECRET'));
-//	curl_setopt($ch, CURLOPT_POST, true);
-//	curl_setopt($ch, CURLOPT_POSTFIELDS, 'currency=ZAR&name=Auto%20%Trader%20ZAR');
-//	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-//	$data = curl_exec($ch);
-//	curl_close($ch);
-//
-//	return $data;
-});
+$app->post('/api/v1/auto-trade/', ['uses' => 'AutoTraderController@trade']);
