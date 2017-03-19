@@ -48,7 +48,7 @@ class AutoTrader implements ErrorMessagesInterface
         $lastOrder = $this->orderRepository->getLastOrder();
 
         //TODO, consider only buying if price in USD is trending up. ZAR might just be selling off more aggressively and then we're buying in on the way down :(
-        if ($percentDifference <= 0.03 AND $lastOrder->getType() != 'BUY') { //buy buy buy!
+        if ($percentDifference <= 0.025 AND $lastOrder->getType() != 'BUY') { //buy buy buy!
             //get my zar balance
             if (($zarBalance = $this->bitXApi->getAccountBalance('ZAR')) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
@@ -56,7 +56,7 @@ class AutoTrader implements ErrorMessagesInterface
             }
 
             //place market order (instantly filled, not ask/bid)
-            if (($order = $this->bitXApi->placeBuyMarketOrder('XBT', 'ZAR', 2 /*floor($zarBalance)*/)) === false) {
+            if (($order = $this->bitXApi->placeBuyMarketOrder('XBT', 'ZAR', floor($zarBalance))) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
                 return null;
             }
@@ -64,7 +64,7 @@ class AutoTrader implements ErrorMessagesInterface
             $this->orderRepository->create($order->order_id, 'BUY');
             $orderDetails = $this->bitXApi->getOrderDetails($order->order_id);
             return $this->orderRepository->update($order->order_id, $orderDetails);
-        } else if ($percentDifference >= 0.06 AND $lastOrder->getType() != 'SELL') { //sell sell sell!
+        } else if ($percentDifference >= 0.065 AND $lastOrder->getType() != 'SELL') { //sell sell sell!
             //make sure the rate is not actually worse than when we bought
             if ($xbtZar->getRate() <= $lastOrder->getRate()) {
                 $this->addError('rate', 'The current buy rate is worse than what was paid');
@@ -78,7 +78,7 @@ class AutoTrader implements ErrorMessagesInterface
             }
 
             //place market order (instantly filled, not ask/bid)
-            if (($order = $this->bitXApi->placeSellMarketOrder('XBT', 'ZAR', 0.0005 /*$zarBalance*/)) === false) {
+            if (($order = $this->bitXApi->placeSellMarketOrder('XBT', 'ZAR', $xbtBalance)) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
                 return null;
             }
