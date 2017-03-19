@@ -55,6 +55,7 @@ class AutoTrader implements ErrorMessagesInterface
                 return null;
             }
 
+            //todo, figure our why you can't buy with your entire balance
             //place market order (instantly filled, not ask/bid)
             if (($order = $this->bitXApi->placeBuyMarketOrder('XBT', 'ZAR', floor($zarBalance))) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
@@ -77,8 +78,9 @@ class AutoTrader implements ErrorMessagesInterface
                 return null;
             }
 
+            //TODO, figure out why you can't sell your entire balance
             //place market order (instantly filled, not ask/bid)
-            if (($order = $this->bitXApi->placeSellMarketOrder('XBT', 'ZAR', $xbtBalance)) === false) {
+            if (($order = $this->bitXApi->placeSellMarketOrder('XBT', 'ZAR', $xbtBalance * 0.95)) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
                 return null;
             }
