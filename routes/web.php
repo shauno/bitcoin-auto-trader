@@ -17,3 +17,5 @@ $app->get('/api/v1/exchange-rates/{from_iso}/{to_iso}', ['uses' => 'ExchangeRate
 $app->post('/api/v1/exchange-rates/{from_iso}/{to_iso}', ['uses' => 'ExchangeRatesController@update']);
 
 $app->post('/api/v1/auto-trade/', ['uses' => 'AutoTraderController@trade']);
+
+$app->get('/api/v1/xbt-gap', ['uses' => 'ExchangeRateGapController@index']);

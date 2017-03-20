@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use BtcAutoTrader\ExchangeRates\ExchangeRate;
+use BtcAutoTrader\ExchangeRates\ExchangeRateReporter;
 use BtcAutoTrader\ExchangeRates\ExchangeRateUpdater;
 
 class ExchangeRatesController
@@ -27,6 +28,17 @@ class ExchangeRatesController
             return response($exchangeRate);
         }catch (\Exception $e) {
             return response($e->getMessage(), 500);
+        }
+    }
+
+    public function show(string $from_iso, string $to_iso, ExchangeRateReporter $exchangeRateReporter)
+    {
+        try {
+            $list = $exchangeRateReporter->getExchangeRate($from_iso, $to_iso, strtotime('-14 days'), time());
+
+            return $list;
+        } catch (\Exception $e) {
+
         }
     }
 }
