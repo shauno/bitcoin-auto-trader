@@ -1,74 +1,35 @@
-var usdZarChart = document.getElementById("chart-usd-zar");
-var xbtUsdChart = document.getElementById("chart-xbt-usd");
-var xbtZarChart = document.getElementById("chart-xbt-zar");
+var gapChart = document.getElementById("chart-xbt-gap");
 
 $.ajax({
-    'url': 'api/v1/exchange-rates/USD/ZAR',
+    'url': 'api/v1/xbt-gap',
     'success': function(data) {
-        var labels = [];
-        var values = [];
-
-        for (item in data) {
-            labels[labels.length] = data[item].created_at;
-            values[values.length] = data[item].rate;
+        var usd = [], zar = [], labels = [];
+        for(item in data) {
+            usd[usd.length] = data[item].xbt_usd_in_zar;
+            zar[zar.length] = data[item].xbt_zar;
+            labels[labels.length] = item;
         }
-        var chart = new Chart(usdZarChart, {
+
+        new Chart(gapChart, {
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [{
-                    label: 'USD/ZAR',
-                    data: values
-                }]
-            }
+                datasets: [
+                    {
+                        label: 'USD converted to ZAR',
+                        data: usd,
+                        fill: false
+                    },
+                    {
+                        label: 'Local ZAR',
+                        data: zar,
+                        fill: false
+                    }
+
+                ]
+            },
+            lineTension: 0
         });
     }
 });
-
-$.ajax({
-    'url': 'api/v1/exchange-rates/XBT/USD',
-    'success': function(data) {
-        var labels = [];
-        var values = [];
-
-        for (item in data) {
-            labels[labels.length] = data[item].created_at;
-            values[values.length] = data[item].rate;
-        }
-        var chart = new Chart(xbtUsdChart, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'XBT/USD',
-                    data: values
-                }]
-            }
-        });
-    }
-});
-
-$.ajax({
-    'url': 'api/v1/exchange-rates/XBT/ZAR',
-    'success': function(data) {
-        var labels = [];
-        var values = [];
-
-        for (item in data) {
-            labels[labels.length] = data[item].created_at;
-            values[values.length] = data[item].rate;
-        }
-        var chart = new Chart(xbtZarChart, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'XBT/ZAR',
-                    data: values
-                }]
-            }
-        });
-    }
-});
-
 

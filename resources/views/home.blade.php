@@ -9,14 +9,8 @@
 </head>
 <body>
 
-<div style="width: 400px; display: inline-block;">
-    <canvas id="chart-usd-zar"></canvas>
-</div>
-<div style="width: 400px; display: inline-block;">
-    <canvas id="chart-xbt-usd"></canvas>
-</div>
-<div style="width: 400px; display: inline-block;">
-    <canvas id="chart-xbt-zar"></canvas>
+<div style="width: 800px; display: inline-block;">
+    <canvas id="chart-xbt-gap"></canvas>
 </div>
 
 <script src="/js/Chart.min.js"></script>
