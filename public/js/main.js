@@ -18,14 +18,17 @@ $.ajax({
                     {
                         label: 'USD converted to ZAR',
                         data: usd,
-                        fill: false
+                        fill: false,
+                        borderColor: '#216C2A',
+                        backgroundColor: '#216C2A'
                     },
                     {
                         label: 'Local ZAR',
                         data: zar,
-                        fill: false
+                        fill: false,
+                        borderColor: '#7777FF',
+                        backgroundColor: '#7777FF'
                     }
-
                 ]
             },
             lineTension: 0
