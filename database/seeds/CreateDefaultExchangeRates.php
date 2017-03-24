@@ -11,6 +11,8 @@ class CreateDefaultExchangeRates extends Seeder
      */
     public function run()
     {
+        \BtcAutoTrader\ExchangeRates\ExchangeRate::truncate();
+
         (new \BtcAutoTrader\ExchangeRates\ExchangeRate())->fill([
             'from_iso'    => 'USD',
             'to_iso'      => 'ZAR',
@@ -31,9 +33,24 @@ class CreateDefaultExchangeRates extends Seeder
             'from_iso'    => 'XBT',
             'to_iso'      => 'USD',
             'rate'        => 1000,
-            'tracker_url' => 'https://api.coinmarketcap.com/v1/ticker/bitcoin/',
-            'value_key'   => '[0].price_usd'
+            'tracker_url' => 'https://api.bitfinex.com/v1/pubticker/btcusd',
+            'value_key'   => 'mid'
         ])->save();
 
+        (new \BtcAutoTrader\ExchangeRates\ExchangeRate())->fill([
+            'from_iso'    => 'XBT',
+            'to_iso'      => 'CNY',
+            'rate'        => 1000,
+            'tracker_url' => 'https://blockchain.info/ticker',
+            'value_key'   => 'CNY.last'
+        ])->save();
+
+        (new \BtcAutoTrader\ExchangeRates\ExchangeRate())->fill([
+            'from_iso'    => 'XBT',
+            'to_iso'      => 'JPY',
+            'rate'        => 1000,
+            'tracker_url' => 'https://blockchain.info/ticker',
+            'value_key'   => 'JPY.last'
+        ])->save();
     }
 }
