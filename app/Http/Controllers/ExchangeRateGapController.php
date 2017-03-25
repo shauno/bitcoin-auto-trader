@@ -8,6 +8,6 @@ class ExchangeRateGapController
 {
     public function index(ExchangeRateReporter $exchangeRateReporter)
     {
-        return $exchangeRateReporter->getExchangeRateGap(strtotime('-1 day'), time());
+        return $exchangeRateReporter->getExchangeRateGap(strtotime('-12 hours'), time());
     }
 }

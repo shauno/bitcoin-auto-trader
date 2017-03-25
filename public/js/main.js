@@ -31,7 +31,15 @@ $.ajax({
                     }
                 ]
             },
-            lineTension: 0
+            options: {
+                elements: {
+                    point: {
+                        radius: 0,
+                        hitRadius: 4,
+                        hoverRadius: 4
+                    }
+                }
+            }
         });
     }
 });

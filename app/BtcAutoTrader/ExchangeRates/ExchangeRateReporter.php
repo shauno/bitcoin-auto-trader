@@ -37,6 +37,7 @@ class ExchangeRateReporter
         $list = (new ExchangeRateLog())
             ->where('created_at', '>=', date('Y-m-d H:i:s', $from_date))
             ->where('created_at', '<=', date('Y-m-d H:i:s', $to_date))
+            ->whereIn('to_iso', ['USD', 'ZAR'])
             ->orderBy('created_at', 'asc')
             ->get();
 
@@ -51,7 +52,7 @@ class ExchangeRateReporter
                 $key = 'xbt_zar';
             }
 
-            $group[date('Y-m-d H', $log->created_at->timestamp)][$key] = $log->rate;
+            $group[date('Y-m-d H:i', $log->created_at->timestamp)][$key] = $log->rate;
         }
 
         $rates = [];
