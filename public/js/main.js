@@ -58,7 +58,7 @@ function currencyGraph(from_iso, to_iso) {
                     labels: labels,
                     datasets: [
                         {
-                            label: from_iso,
+                            label: to_iso,
                             data: value,
                             fill: false,
                         }
