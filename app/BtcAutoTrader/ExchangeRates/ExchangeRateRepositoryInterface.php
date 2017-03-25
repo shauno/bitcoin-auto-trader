@@ -2,8 +2,15 @@
 
 namespace BtcAutoTrader\ExchangeRates;
 
+use Illuminate\Support\Collection;
+
 interface ExchangeRateRepositoryInterface
 {
+    /**
+     * @return Collection
+     */
+    public function findAll() :Collection;
+
     /**
      * @param string $from_iso
      * @param string $to_iso

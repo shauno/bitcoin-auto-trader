@@ -2,8 +2,18 @@
 
 namespace BtcAutoTrader\ExchangeRates;
 
+use Illuminate\Support\Collection;
+
 class ExchangeRateRepositoryEloquent implements ExchangeRateRepositoryInterface
 {
+    /**
+     * @return Collection
+     */
+    public function findAll(): Collection
+    {
+        return (new ExchangeRate())->get();
+    }
+
     /**
      * @param string $from_iso
      * @param string $to_iso

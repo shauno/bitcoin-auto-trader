@@ -4,6 +4,7 @@ namespace BtcAutoTrader\ExchangeRates;
 
 use BtcAutoTrader\Errors\ErrorMessagesInterface;
 use BtcAutoTrader\Errors\ErrorMessageTrait;
+use Illuminate\Support\Collection;
 use Illuminate\Support\MessageBag;
 
 class ExchangeRateUpdater implements ErrorMessagesInterface
@@ -45,5 +46,21 @@ class ExchangeRateUpdater implements ErrorMessagesInterface
         $exchangeRate->setRate($rate);
         $this->exchangeRateRepository->log($exchangeRate);
         return $this->exchangeRateRepository->update($exchangeRate);
+    }
+
+    /**
+     * Update all the exchange rates we have stored
+     * @return Collection
+     */
+    public function bulkUpdate() : Collection
+    {
+        $exchangeRates = $this->exchangeRateRepository->findAll();
+
+        $return = new Collection();
+        foreach ($exchangeRates as $exchangeRate) {
+            $return->push($this->update($exchangeRate->getFromIso(), $exchangeRate->getToIso()));
+        }
+
+        return $return;
     }
 }

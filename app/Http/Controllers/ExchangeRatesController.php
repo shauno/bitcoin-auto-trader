@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use BtcAutoTrader\ExchangeRates\ExchangeRate;
 use BtcAutoTrader\ExchangeRates\ExchangeRateReporter;
 use BtcAutoTrader\ExchangeRates\ExchangeRateUpdater;
+use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 
 class ExchangeRatesController
 {
@@ -27,6 +29,23 @@ class ExchangeRatesController
 
             return response($exchangeRate);
         }catch (\Exception $e) {
+            return response($e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Convenience method to update all rates in the system
+     *
+     * @param ExchangeRateUpdater $exchangeRateUpdater
+     * @return Response|Collection
+     */
+    public function bulkUpdate(ExchangeRateUpdater $exchangeRateUpdater)
+    {
+        try {
+            $exchangeRates = $exchangeRateUpdater->bulkUpdate();
+
+            return $exchangeRates;
+        } catch (\Exception $e) {
             return response($e->getMessage(), 500);
         }
     }
