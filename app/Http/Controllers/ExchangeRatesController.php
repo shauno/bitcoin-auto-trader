@@ -5,11 +5,29 @@ namespace App\Http\Controllers;
 use BtcAutoTrader\ExchangeRates\ExchangeRate;
 use BtcAutoTrader\ExchangeRates\ExchangeRateReporter;
 use BtcAutoTrader\ExchangeRates\ExchangeRateUpdater;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 
 class ExchangeRatesController
 {
+    public function index(Request $request, ExchangeRateReporter $exchangeRateReporter)
+    {
+
+        if (!$request->get('from_iso') || !$request->get('to_iso')) {
+            dd('Need from_iso and to_iso'); //TODO, use proper error handling dumbass
+        }
+
+        $timeBack = $request->get('time_back') ?? '12 hours';
+
+        return $exchangeRateReporter->getExchangeRate(
+            $request->get('from_iso'),
+            $request->get('to_iso'),
+            strtotime('-'.$timeBack),
+            time()
+        );
+    }
+
     /**
      * Retrieve the latest exchange rates for the currency pair and update it
      *

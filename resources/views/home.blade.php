@@ -9,8 +9,18 @@
 </head>
 <body>
 
-<div style="width: 800px; display: inline-block;">
+<div style="width: 1200px; display: inline-block;">
     <canvas id="chart-xbt-gap"></canvas>
+</div>
+
+<br />
+
+<div style="width: 400px; display: inline-block;">
+    <canvas id="chart-xbt-cny"></canvas>
+</div>
+
+<div style="width: 400px; display: inline-block;">
+    <canvas id="chart-xbt-jpy"></canvas>
 </div>
 
 <script src="/js/Chart.min.js"></script>

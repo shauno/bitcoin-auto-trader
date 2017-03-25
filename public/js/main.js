@@ -1,5 +1,3 @@
-var gapChart = document.getElementById("chart-xbt-gap");
-
 $.ajax({
     'url': 'api/v1/xbt-gap',
     'success': function(data) {
@@ -10,7 +8,7 @@ $.ajax({
             labels[labels.length] = item;
         }
 
-        new Chart(gapChart, {
+        new Chart(document.getElementById("chart-xbt-gap"), {
             type: 'line',
             data: {
                 labels: labels,
@@ -43,4 +41,43 @@ $.ajax({
         });
     }
 });
+
+function currencyGraph(from_iso, to_iso) {
+    $.ajax({
+        'url': 'api/v1/exchange-rates?from_iso='+from_iso+'&to_iso='+to_iso,
+        'success': function (data) {
+            var value = [], labels = [];
+            for (item in data) {
+                value[value.length] = data[item].rate;
+                labels[labels.length] = data[item].created_at;
+            }
+
+            new Chart(document.getElementById('chart-'+from_iso.toLowerCase()+'-'+to_iso.toLowerCase()), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: from_iso,
+                            data: value,
+                            fill: false,
+                        }
+                    ]
+                },
+                options: {
+                    elements: {
+                        point: {
+                            radius: 0,
+                            hitRadius: 4,
+                            hoverRadius: 4
+                        }
+                    }
+                }
+            });
+        }
+    });
+}
+
+currencyGraph('XBT', 'CNY');
+currencyGraph('XBT', 'JPY');
 

@@ -13,8 +13,16 @@ class ExchangeRateReporter
         $this->exchangeRateRepository = $exchangeRateRepository;
     }
 
-    public function getExchangeRate(string $from_iso, string $to_iso, int $from_date, int $to_date) : ?Collection
+    /**
+     * @param string $from_iso
+     * @param string $to_iso
+     * @param int $from_date Timestamp
+     * @param int $to_date Timestamp
+     * @return Collection
+     */
+    public function getExchangeRate(string $from_iso, string $to_iso, int $from_date, int $to_date) : Collection
     {
+        //Should be using the repo fool TODO
         $list = (new ExchangeRateLog())
             ->where('from_iso', $from_iso)
             ->where('to_iso', $to_iso)
@@ -34,6 +42,7 @@ class ExchangeRateReporter
      */
     public function getExchangeRateGap(int $from_date, int $to_date) : ?array
     {
+        //Why not use the repo clown? TODO
         $list = (new ExchangeRateLog())
             ->where('created_at', '>=', date('Y-m-d H:i:s', $from_date))
             ->where('created_at', '<=', date('Y-m-d H:i:s', $to_date))

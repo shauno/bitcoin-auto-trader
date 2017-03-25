@@ -13,6 +13,7 @@
 
 $app->get('/', ['uses' => 'PageController@home']);
 
+$app->get('/api/v1/exchange-rates', ['uses' => 'ExchangeRatesController@index']);
 $app->get('/api/v1/exchange-rates/{from_iso}/{to_iso}', ['uses' => 'ExchangeRatesController@show']);
 $app->post('/api/v1/exchange-rates/{from_iso}/{to_iso}', ['uses' => 'ExchangeRatesController@update']);
 $app->get('/api/v1/exchange-rates/bulk-update', ['uses' => 'ExchangeRatesController@bulkUpdate']);
