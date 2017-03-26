@@ -63,6 +63,7 @@ class AutoTrader implements ErrorMessagesInterface
             }
 
             $this->orderRepository->create($order->order_id, 'BUY');
+            sleep(1);
             $orderDetails = $this->bitXApi->getOrderDetails($order->order_id);
             return $this->orderRepository->update($order->order_id, $orderDetails);
         } else if ($percentDifference >= 0.065 && (is_null($lastOrder) || $lastOrder->getType() != 'SELL')) { //sell sell sell!
@@ -86,6 +87,7 @@ class AutoTrader implements ErrorMessagesInterface
             }
 
             $this->orderRepository->create($order->order_id, 'SELL');
+            sleep(1);
             $orderDetails = $this->bitXApi->getOrderDetails($order->order_id);
             return $this->orderRepository->update($order->order_id, $orderDetails);
         }
