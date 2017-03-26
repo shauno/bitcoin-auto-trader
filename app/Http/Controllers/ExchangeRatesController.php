@@ -8,6 +8,7 @@ use BtcAutoTrader\ExchangeRates\ExchangeRateUpdater;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class ExchangeRatesController
 {
@@ -42,11 +43,13 @@ class ExchangeRatesController
             $exchangeRate = $exchangeRateUpdater->update($from_iso, $to_iso);
 
             if ($exchangeRateUpdater->hasErrors()) {
+                Log::warning(__METHOD__.'(): Errors found: '.$exchangeRateUpdater->getErrors());
                 return response($exchangeRateUpdater->getErrors(), 400);
             }
 
             return response($exchangeRate);
         }catch (\Exception $e) {
+            Log::warning(__METHOD__.'(): Exception: '.$e->getMessage());
             return response($e->getMessage(), 500);
         }
     }
@@ -64,6 +67,7 @@ class ExchangeRatesController
 
             return $exchangeRates;
         } catch (\Exception $e) {
+            Log::warning(__METHOD__.'(): Exception: '.$e->getMessage());
             return response($e->getMessage(), 500);
         }
     }
