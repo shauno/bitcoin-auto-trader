@@ -26,12 +26,9 @@ class AutoTraderController extends Controller
         }
     }
 
-    public function orderDetails(string $order_id, BitX $bitXApi, OrderRepositoryInterface $orderRepository
-    )
+    public function orderDetails(string $order_id, BitX $bitXApi, OrderRepositoryInterface $orderRepository)
     {
         $orderDetails = $bitXApi->getOrderDetails($order_id);
-
-        dd($orderDetails);
-        //return $orderRepository->update($order->order_id, $orderDetails);
+        return $orderRepository->update($order_id, $orderDetails);
     }
 }
