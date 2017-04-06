@@ -30,7 +30,7 @@ class OrderRepositoryEloquent implements OrderRepositoryInterface
         $order = (new Order())->where('order_id', $order_id)->first();
 
         //calculate the rate paid for this order (why it isn't returned from the API is a mystery)
-        $rate = 1 / $details->base * $details->counter;
+        $rate = $details->base ? 1 / $details->base * $details->counter : 0;
 
         $order->creation_timestamp = $details->creation_timestamp;
         $order->expiration_timestamp = $details->expiration_timestamp;
