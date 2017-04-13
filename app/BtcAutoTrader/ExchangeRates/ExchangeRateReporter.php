@@ -66,7 +66,9 @@ class ExchangeRateReporter
 
         $rates = [];
         foreach ($group as $date => $list) {
-            $rates[$date] = $list + ['xbt_usd_in_zar' => $list['usd_zar'] * $list['xbt_usd']];
+            if (isset($list['usd_zar'], $list['xbt_usd'])) {
+                $rates[$date] = $list + ['xbt_usd_in_zar' => $list['usd_zar'] * $list['xbt_usd']];
+            }
         }
 
         return $rates;
