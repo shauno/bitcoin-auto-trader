@@ -2,6 +2,8 @@
 
 namespace BtcAutoTrader\Orders;
 
+use Illuminate\Support\Collection;
+
 interface OrderRepositoryInterface
 {
     /**
@@ -27,4 +29,10 @@ interface OrderRepositoryInterface
      */
     public function getLastOrder(string $type = null) : ?Order;
 
+    /**
+     * @param string $order
+     * @param int|null $limit
+     * @return Collection
+     */
+    public function findAll($order = 'DESC', int $limit = null) : Collection;
 }

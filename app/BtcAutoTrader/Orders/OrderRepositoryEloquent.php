@@ -2,6 +2,8 @@
 
 namespace BtcAutoTrader\Orders;
 
+use Illuminate\Support\Collection;
+
 class OrderRepositoryEloquent implements OrderRepositoryInterface
 {
     /**
@@ -70,4 +72,20 @@ class OrderRepositoryEloquent implements OrderRepositoryInterface
         return $order->first();
     }
 
+    /**
+     * @param string $order
+     * @param int|null $limit
+     * @return Collection
+     */
+    public function findAll($order = 'DESC', int $limit = null): Collection
+    {
+        $list = (new Order())
+            ->orderBy('id', $order);
+
+        if ($limit) {
+            $list = $list->limit($limit);
+        }
+
+        return $list->get();
+    }
 }

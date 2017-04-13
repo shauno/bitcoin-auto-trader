@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use BtcAutoTrader\Orders\OrderRepositoryInterface;
+
 class PageController extends Controller
 {
-    public function home()
+    public function home(OrderRepositoryInterface $orderRepository)
     {
-        return view('home');
+        return view('home')
+            ->with('orders', $orderRepository->findAll());
     }
 }
