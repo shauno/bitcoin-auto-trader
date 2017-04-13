@@ -1,10 +1,11 @@
 $.ajax({
     'url': 'api/v1/xbt-gap',
     'success': function(data) {
-        var usd = [], zar = [], labels = [];
+        var usd = [], zar = [], percent=[], labels = [];
         for(item in data) {
             usd[usd.length] = data[item].xbt_usd_in_zar;
             zar[zar.length] = data[item].xbt_zar;
+            percent[percent.length] = data[item].percent;
             labels[labels.length] = item;
         }
 
@@ -15,6 +16,7 @@ $.ajax({
                 datasets: [
                     {
                         label: 'USD converted to ZAR',
+                        yAxisID: 'y-axis-rand',
                         data: usd,
                         fill: false,
                         borderColor: '#216C2A',
@@ -22,10 +24,19 @@ $.ajax({
                     },
                     {
                         label: 'Local ZAR',
+                        yAxisID: 'y-axis-rand',
                         data: zar,
                         fill: false,
                         borderColor: '#7777FF',
                         backgroundColor: '#7777FF'
+                    },
+                    {
+                        label: 'Gap',
+                        yAxisID: 'y-axis-percent',
+                        data: percent,
+                        fill: false,
+                        borderColor: '#cccccc',
+                        backgroundColor: '#cccccc'
                     }
                 ]
             },
@@ -36,6 +47,18 @@ $.ajax({
                         hitRadius: 4,
                         hoverRadius: 4
                     }
+                },
+                scales: {
+                    yAxes: [
+                        {
+                            position: 'left',
+                            id: 'y-axis-rand'
+                        },
+                        {
+                            position: 'right',
+                            id: 'y-axis-percent'
+                        }
+                    ]
                 }
             }
         });

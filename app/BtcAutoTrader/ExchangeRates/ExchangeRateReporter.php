@@ -67,7 +67,11 @@ class ExchangeRateReporter
         $rates = [];
         foreach ($group as $date => $list) {
             if (isset($list['usd_zar'], $list['xbt_usd'])) {
-                $rates[$date] = $list + ['xbt_usd_in_zar' => $list['usd_zar'] * $list['xbt_usd']];
+                $xbtUsdInZar = $list['usd_zar'] * $list['xbt_usd']; //calc the equivalent zar price of a usd coin
+                $rates[$date] = $list + [
+                    'xbt_usd_in_zar' => $xbtUsdInZar,
+                    'percent' => ($list['xbt_zar'] - $xbtUsdInZar) / $list['xbt_zar'] * 100,
+                ];
             }
         }
 
