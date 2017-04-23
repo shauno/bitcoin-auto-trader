@@ -33,8 +33,8 @@ class CreateDefaultExchangeRates extends Seeder
             'from_iso'    => 'XBT',
             'to_iso'      => 'USD',
             'rate'        => 1000,
-            'tracker_url' => 'https://api.bitfinex.com/v1/pubticker/btcusd',
-            'value_key'   => 'mid'
+            'tracker_url' => 'https://blockchain.info/ticker',
+            'value_key'   => 'USD.last'
         ])->save();
 
         (new \BtcAutoTrader\ExchangeRates\ExchangeRate())->fill([
