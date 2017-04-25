@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use BtcAutoTrader\Api\BitX;
 use BtcAutoTrader\AutoTrader\AutoTrader;
+use BtcAutoTrader\Orders\OrderRepositoryInterface;
 use Illuminate\Support\Facades\Log;
 
 class AutoTraderController extends Controller
@@ -22,5 +24,11 @@ class AutoTraderController extends Controller
             Log::warning(__METHOD__.'(): Exception: '.$e->getMessage());
             return response($e->getMessage(), 500);
         }
+    }
+
+    public function orderDetails(string $order_id, BitX $bitXApi, OrderRepositoryInterface $orderRepository)
+    {
+        $orderDetails = $bitXApi->getOrderDetails($order_id);
+        return $orderRepository->update($order_id, $orderDetails);
     }
 }
