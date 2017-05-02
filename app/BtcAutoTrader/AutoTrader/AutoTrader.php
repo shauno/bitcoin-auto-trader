@@ -70,7 +70,7 @@ class AutoTrader implements ErrorMessagesInterface
             }
 
             return $this->orderRepository->update($order->order_id, $orderDetails);
-        } else if ($percentDifference >= 0.065 && (is_null($lastOrder) || $lastOrder->getType() != 'SELL')) { //sell sell sell!
+        } else if ($percentDifference >= 0.055 && (is_null($lastOrder) || $lastOrder->getType() != 'SELL')) { //sell sell sell!
             //make sure the rate is not actually worse than when we bought
             if ($lastOrder && $xbtZar->getRate() <= $lastOrder->getRate()) {
                 $this->addError('rate', 'The current buy rate is worse than what was paid');
