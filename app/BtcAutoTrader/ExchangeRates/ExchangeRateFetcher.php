@@ -8,6 +8,8 @@ class ExchangeRateFetcher
 {
     protected $client;
 
+    protected $trackerCache = [];
+
     /**
      * ExchangeRateFetcher constructor.
      * @param Client $client
@@ -15,6 +17,21 @@ class ExchangeRateFetcher
     public function __construct(Client $client)
     {
         $this->client = $client;
+    }
+
+    /**
+     * @param $url
+     * @return \stdClass|array
+     */
+    protected function getTrackerResponse($url)
+    {
+        $response = $this->trackerCache[$url] ?? false;
+        if (!$response) {
+            $response = $this->client->get($url);
+            $this->trackerCache[$url] = $response;
+        }
+
+        return $response;
     }
 
     /**
@@ -26,7 +43,7 @@ class ExchangeRateFetcher
     public function getRate(ExchangeRate $exchangeRate)
     {
         try {
-            $response = $this->client->get($exchangeRate->getTrackerUrl());
+            $response = $this->getTrackerResponse($exchangeRate->getTrackerUrl());
             return (float)$this->getValueFromJson($response, $exchangeRate->getValueKey());
         } catch (\Exception $e) {
             throw new \RuntimeException('Failed to connect to exchange rate tracker');
