@@ -64,6 +64,8 @@ class AutoTrader implements ErrorMessagesInterface
 
             $this->orderRepository->create($order->order_id, 'BUY');
 
+            sleep(3);
+
             if (!$orderDetails = $this->bitXApi->getOrderDetails($order->order_id)) {
                 $this->setErrors($this->bitXApi->getErrors());
                 return null;
@@ -89,6 +91,8 @@ class AutoTrader implements ErrorMessagesInterface
                 $this->setErrors($this->bitXApi->getErrors());
                 return null;
             }
+
+            sleep(3);
 
             $this->orderRepository->create($order->order_id, 'SELL');
 
