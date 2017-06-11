@@ -1,5 +1,7 @@
 <?php
 
+use Tests\TestCase;
+
 class ExchangeRateFetcherTest extends TestCase
 {
     public function test_get_value_from_json()

@@ -11,14 +11,14 @@
 |
 */
 
-$app->get('/', ['uses' => 'PageController@home']);
+Route::get('/', ['uses' => 'PageController@home']);
 
-$app->get('/api/v1/exchange-rates', ['uses' => 'ExchangeRatesController@index']);
-$app->get('/api/v1/exchange-rates/{from_iso}/{to_iso}', ['uses' => 'ExchangeRatesController@show']);
-$app->post('/api/v1/exchange-rates/{from_iso}/{to_iso}', ['uses' => 'ExchangeRatesController@update']);
-$app->get('/api/v1/exchange-rates/bulk-update', ['uses' => 'ExchangeRatesController@bulkUpdate']);
+Route::get('/api/v1/exchange-rates', ['uses' => 'ExchangeRatesController@index']);
+Route::get('/api/v1/exchange-rates/{from_iso}/{to_iso}', ['uses' => 'ExchangeRatesController@show']);
+Route::post('/api/v1/exchange-rates/{from_iso}/{to_iso}', ['uses' => 'ExchangeRatesController@update']);
+Route::get('/api/v1/exchange-rates/bulk-update', ['uses' => 'ExchangeRatesController@bulkUpdate']);
 
-$app->post('/api/v1/auto-trade/', ['uses' => 'AutoTraderController@trade']);
-$app->get('/api/v1/order-details/{order_id}', ['uses' => 'AutoTraderController@orderDetails']);
+Route::post('/api/v1/auto-trade/', ['uses' => 'AutoTraderController@trade']);
+Route::get('/api/v1/order-details/{order_id}', ['uses' => 'AutoTraderController@orderDetails']);
 
-$app->get('/api/v1/xbt-gap', ['uses' => 'ExchangeRateGapController@index']);
+Route::get('/api/v1/xbt-gap', ['uses' => 'ExchangeRateGapController@index']);
