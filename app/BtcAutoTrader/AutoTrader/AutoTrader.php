@@ -48,7 +48,7 @@ class AutoTrader implements ErrorMessagesInterface
         $lastOrder = $this->orderRepository->getLastOrder();
 
         //TODO, consider only buying if price in USD is trending up. ZAR might just be selling off more aggressively and then we're buying in on the way down :(
-        if ($percentDifference <= 0.1 && (is_null($lastOrder) || $lastOrder->getType() != 'BUY')) { //buy buy buy!
+        if ($percentDifference <= 0.06 && (is_null($lastOrder) || $lastOrder->getType() != 'BUY')) { //buy buy buy!
             //get my zar balance
             if (($zarBalance = $this->bitXApi->getAccountBalance('ZAR')) === false) {
                 $this->setErrors($this->bitXApi->getErrors());
@@ -64,7 +64,7 @@ class AutoTrader implements ErrorMessagesInterface
 
             $this->orderRepository->create($order->order_id, 'BUY');
 
-            sleep(3);
+            sleep(5);
 
             if (!$orderDetails = $this->bitXApi->getOrderDetails($order->order_id)) {
                 $this->setErrors($this->bitXApi->getErrors());
@@ -72,7 +72,7 @@ class AutoTrader implements ErrorMessagesInterface
             }
 
             return $this->orderRepository->update($order->order_id, $orderDetails);
-        } else if ($percentDifference >= 0.2 && (is_null($lastOrder) || $lastOrder->getType() != 'SELL')) { //sell sell sell!
+        } else if ($percentDifference >= 0.1 && (is_null($lastOrder) || $lastOrder->getType() != 'SELL')) { //sell sell sell!
             //make sure the rate is not actually worse than when we bought
             if ($lastOrder && $xbtZar->getRate() <= $lastOrder->getRate()) {
                 $this->addError('rate', 'The current buy rate is worse than what was paid');
@@ -92,7 +92,7 @@ class AutoTrader implements ErrorMessagesInterface
                 return null;
             }
 
-            sleep(3);
+            sleep(5);
 
             $this->orderRepository->create($order->order_id, 'SELL');
 
