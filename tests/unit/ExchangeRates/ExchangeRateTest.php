@@ -1,5 +1,7 @@
 <?php
 
+use Tests\TestCase;
+
 class ExchangeRateTest extends TestCase
 {
     public function test_hidden_fields_are_not_shown()

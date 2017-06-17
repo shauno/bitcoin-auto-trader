@@ -11,6 +11,16 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
+    }
+
+    /**
      * Register any application services.
      *
      * @return void
@@ -28,5 +38,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('BtcAutoTrader\Orders\OrderRepositoryInterface', function() {
             return new OrderRepositoryEloquent();
         });
+
     }
 }
