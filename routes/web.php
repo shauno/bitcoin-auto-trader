@@ -22,3 +22,6 @@ Route::post('/api/v1/auto-trade/', ['uses' => 'AutoTraderController@trade']);
 Route::get('/api/v1/order-details/{order_id}', ['uses' => 'AutoTraderController@orderDetails']);
 
 Route::get('/api/v1/xbt-gap', ['uses' => 'ExchangeRateGapController@index']);
+
+Route::post('/instant-order/buy', ['uses' => 'AutoTraderController@instantBuyOrder', 'as' => 'instant-buy-order']);
+Route::post('/instant-order/sell', ['uses' => 'AutoTraderController@instantSellOrder', 'as' => 'instant-sell-order']);
