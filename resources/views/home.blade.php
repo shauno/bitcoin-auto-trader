@@ -21,7 +21,7 @@
 <div style="width: 150px; display: inline-block; vertical-align: top">
     <form method="post" action="{{ route($lastOrder->getType() === 'SELL' ? 'instant-buy-order' : 'instant-sell-order') }}">
         <input type="password" name="password">
-        <button type="submit" style="width:100%;"><?php $lastOrder->getType() === 'SELL' ? 'But' : 'Sell' ?></button>
+        <button type="submit" style="width:100%;"><?php echo $lastOrder->getType() === 'SELL' ? 'Buy' : 'Sell' ?></button>
     </form>
 </div>
 
