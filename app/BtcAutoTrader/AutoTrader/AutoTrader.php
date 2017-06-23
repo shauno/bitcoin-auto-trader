@@ -48,9 +48,9 @@ class AutoTrader implements ErrorMessagesInterface
         $lastOrder = $this->orderRepository->getLastOrder();
 
         //TODO, consider only buying if price in USD is trending up. ZAR might just be selling off more aggressively and then we're buying in on the way down :(
-        if ($percentDifference <= 0.08 && (is_null($lastOrder) || $lastOrder->getType() != 'BUY')) { //buy buy buy!
+        if ($percentDifference <= 0.04 && (is_null($lastOrder) || $lastOrder->getType() != 'BUY')) { //buy buy buy!
             return $this->buy();
-        } else if ($percentDifference >= 0.14 && (is_null($lastOrder) || $lastOrder->getType() != 'SELL')) { //sell sell sell!
+        } else if ($percentDifference >= 0.1 && (is_null($lastOrder) || $lastOrder->getType() != 'SELL')) { //sell sell sell!
             //make sure the rate is not actually worse than when we bought
             if ($lastOrder && $xbtZar->getRate() <= $lastOrder->getRate()) {
                 $this->addError('rate', 'The current buy rate is worse than what was paid');
