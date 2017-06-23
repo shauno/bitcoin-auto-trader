@@ -49,29 +49,7 @@ class AutoTrader implements ErrorMessagesInterface
 
         //TODO, consider only buying if price in USD is trending up. ZAR might just be selling off more aggressively and then we're buying in on the way down :(
         if ($percentDifference <= 0.08 && (is_null($lastOrder) || $lastOrder->getType() != 'BUY')) { //buy buy buy!
-            //get my zar balance
-            if (($zarBalance = $this->bitXApi->getAccountBalance('ZAR')) === false) {
-                $this->setErrors($this->bitXApi->getErrors());
-                return null;
-            }
-
-            //todo, figure our why you can't buy with your entire balance
-            //place market order (instantly filled, not ask/bid)
-            if (($order = $this->bitXApi->placeBuyMarketOrder('XBT', 'ZAR', floor($zarBalance))) === false) {
-                $this->setErrors($this->bitXApi->getErrors());
-                return null;
-            }
-
-            $this->orderRepository->create($order->order_id, 'BUY');
-
-            sleep(5);
-
-            if (!$orderDetails = $this->bitXApi->getOrderDetails($order->order_id)) {
-                $this->setErrors($this->bitXApi->getErrors());
-                return null;
-            }
-
-            return $this->orderRepository->update($order->order_id, $orderDetails);
+            return $this->buy();
         } else if ($percentDifference >= 0.14 && (is_null($lastOrder) || $lastOrder->getType() != 'SELL')) { //sell sell sell!
             //make sure the rate is not actually worse than when we bought
             if ($lastOrder && $xbtZar->getRate() <= $lastOrder->getRate()) {
@@ -79,29 +57,7 @@ class AutoTrader implements ErrorMessagesInterface
                 return null;
             }
 
-            //get my xbt balance
-            if (($xbtBalance = $this->bitXApi->getAccountBalance('XBT')) === false) {
-                $this->setErrors($this->bitXApi->getErrors());
-                return null;
-            }
-
-            //TODO, figure out why you can't sell your entire balance
-            //place market order (instantly filled, not ask/bid)
-            if (($order = $this->bitXApi->placeSellMarketOrder('XBT', 'ZAR', $xbtBalance * 0.95)) === false) {
-                $this->setErrors($this->bitXApi->getErrors());
-                return null;
-            }
-
-            sleep(5);
-
-            $this->orderRepository->create($order->order_id, 'SELL');
-
-            if (!$orderDetails = $this->bitXApi->getOrderDetails($order->order_id)) {
-                $this->setErrors($this->bitXApi->getErrors());
-                return null;
-            }
-
-            return $this->orderRepository->update($order->order_id, $orderDetails);
+            return $this->sell();
         }
 
         return null;
@@ -123,5 +79,59 @@ class AutoTrader implements ErrorMessagesInterface
 
         //return the % difference between the rates
         return $diff / $expensive->getRate();
+    }
+
+    public function buy()
+    {
+        //get my zar balance
+        if (($zarBalance = $this->bitXApi->getAccountBalance('ZAR')) === false) {
+            $this->setErrors($this->bitXApi->getErrors());
+            return null;
+        }
+
+        //todo, figure our why you can't buy with your entire balance
+        //place market order (instantly filled, not ask/bid)
+        if (($order = $this->bitXApi->placeBuyMarketOrder('XBT', 'ZAR', floor($zarBalance))) === false) {
+            $this->setErrors($this->bitXApi->getErrors());
+            return null;
+        }
+
+        $this->orderRepository->create($order->order_id, 'BUY');
+
+        sleep(5); //not documented in the API, but it seems the purchase details are not retrievable immediately. So hax :)
+
+        if (!$orderDetails = $this->bitXApi->getOrderDetails($order->order_id)) {
+            $this->setErrors($this->bitXApi->getErrors());
+            return null;
+        }
+
+        return $this->orderRepository->update($order->order_id, $orderDetails);
+    }
+
+    public function sell()
+    {
+        //get my xbt balance
+        if (($xbtBalance = $this->bitXApi->getAccountBalance('XBT')) === false) {
+            $this->setErrors($this->bitXApi->getErrors());
+            return null;
+        }
+
+        //TODO, figure out why you can't sell your entire balance
+        //place market order (instantly filled, not ask/bid)
+        if (($order = $this->bitXApi->placeSellMarketOrder('XBT', 'ZAR', $xbtBalance * 0.95)) === false) {
+            $this->setErrors($this->bitXApi->getErrors());
+            return null;
+        }
+
+        sleep(5);
+
+        $this->orderRepository->create($order->order_id, 'SELL');
+
+        if (!$orderDetails = $this->bitXApi->getOrderDetails($order->order_id)) {
+            $this->setErrors($this->bitXApi->getErrors());
+            return null;
+        }
+
+        return $this->orderRepository->update($order->order_id, $orderDetails);
     }
 }

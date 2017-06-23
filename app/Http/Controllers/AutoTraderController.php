@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use BtcAutoTrader\Api\BitX;
 use BtcAutoTrader\AutoTrader\AutoTrader;
 use BtcAutoTrader\Orders\OrderRepositoryInterface;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class AutoTraderController extends Controller
@@ -31,4 +32,23 @@ class AutoTraderController extends Controller
         $orderDetails = $bitXApi->getOrderDetails($order_id);
         return $orderRepository->update($order_id, $orderDetails);
     }
+
+    public function instantBuyOrder(Request $request, AutoTrader $autoTrader)
+    {
+        if ($request->get('password') === env('INSTANT_ORDER_PASSWORD')) {
+            $autoTrader->buy();
+        } else {
+            return response('No, not for you', 403);
+        }
+    }
+
+    public function instantSellOrder(Request $request, AutoTrader $autoTrader)
+    {
+        if ($request->get('password') === env('INSTANT_ORDER_PASSWORD')) {
+            $autoTrader->sell();
+        } else {
+            return response('No, not for you', 403);
+        }
+    }
+
 }

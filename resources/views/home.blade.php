@@ -8,9 +8,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-
+<?php
+/**
+ * @var $orders \BtcAutoTrader\Orders\Order[]
+ * @var $lastOrder \BtcAutoTrader\Orders\Order
+ */
+?>
 <div style="width: 1200px; display: inline-block;">
     <canvas id="chart-xbt-gap"></canvas>
+</div>
+
+<div style="width: 150px; display: inline-block; vertical-align: top">
+    <form method="post" action="{{ route($lastOrder->getType() === 'SELL' ? 'instant-buy-order' : 'instant-sell-order') }}">
+        <input type="password" name="password">
+        <button type="submit" style="width:100%;"><?php echo $lastOrder->getType() === 'SELL' ? 'Buy' : 'Sell' ?></button>
+    </form>
 </div>
 
 <br />
