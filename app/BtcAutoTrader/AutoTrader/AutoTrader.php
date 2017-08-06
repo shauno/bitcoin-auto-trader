@@ -29,10 +29,12 @@ class AutoTrader implements ErrorMessagesInterface
         $this->orderRepository = $orderRepository;
     }
 
-    /**
-     * @return Order|null
-     */
-    public function trade() : ?Order
+	/**
+	 * @param float $buyGap Percent / 100 between exchanges to signal a buy order (eg 0.04 = 4%)
+	 * @param float $sellGap Percent / 100 between exchanges to signal a sell order (eg 0.08 = 8%)
+	 * @return Order|null
+	 */
+    public function trade(float $buyGap = 0.02, float $sellGap = 0.06) : ?Order
     {
         $xbtUsd = $this->exchangeRateRepository->find('XBT', 'USD');
         $xbtZar = $this->exchangeRateRepository->find('XBT', 'ZAR');
@@ -48,9 +50,9 @@ class AutoTrader implements ErrorMessagesInterface
         $lastOrder = $this->orderRepository->getLastOrder();
 
         //TODO, consider only buying if price in USD is trending up. ZAR might just be selling off more aggressively and then we're buying in on the way down :(
-        if ($percentDifference <= 0.04 && (is_null($lastOrder) || $lastOrder->getType() != 'BUY')) { //buy buy buy!
+        if ($percentDifference <= $buyGap && (is_null($lastOrder) || $lastOrder->getType() != 'BUY')) { //buy buy buy!
             return $this->buy();
-        } else if ($percentDifference >= 0.08 && (is_null($lastOrder) || $lastOrder->getType() != 'SELL')) { //sell sell sell!
+        } else if ($percentDifference >= $sellGap && (is_null($lastOrder) || $lastOrder->getType() != 'SELL')) { //sell sell sell!
             //make sure the rate is not actually worse than when we bought
             if ($lastOrder && $xbtZar->getRate() <= $lastOrder->getRate()) {
                 $this->addError('rate', 'The current buy rate is worse than what was paid');

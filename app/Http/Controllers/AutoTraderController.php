@@ -13,7 +13,7 @@ class AutoTraderController extends Controller
     public function trade(AutoTrader $autoTrader)
     {
         try {
-            $trade = $autoTrader->trade();
+            $trade = $autoTrader->trade(env('BUY_GAP'), env('SELL_GAP'));
 
             if ($autoTrader->hasErrors()) {
                 Log::warning(__METHOD__.'(): Errors found: '.$autoTrader->getErrors());
