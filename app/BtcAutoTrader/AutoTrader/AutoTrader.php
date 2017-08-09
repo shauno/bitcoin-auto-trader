@@ -29,12 +29,14 @@ class AutoTrader implements ErrorMessagesInterface
         $this->orderRepository = $orderRepository;
     }
 
-	/**
-	 * @param float $buyGap Percent / 100 between exchanges to signal a buy order (eg 0.04 = 4%)
-	 * @param float $sellGap Percent / 100 between exchanges to signal a sell order (eg 0.08 = 8%)
-	 * @return Order|null
-	 */
-    public function trade(float $buyGap = 0.02, float $sellGap = 0.06) : ?Order
+    /**
+     * @param float $buyGap Percent / 100 between exchanges to signal a buy order (eg 0.04 = 4%)
+     * @param float $sellGap Percent / 100 between exchanges to signal a sell order (eg 0.08 = 8%)
+     * @param $zarAccountId Luno ZAR account to use for the trade
+     * @param $xbtAccountId Luno XBT account to use for the trade
+     * @return Order|null
+     */
+    public function trade(float $buyGap = 0.02, float $sellGap = 0.06, $zarAccountId, $xbtAccountId) : ?Order
     {
         $xbtUsd = $this->exchangeRateRepository->find('XBT', 'USD');
         $xbtZar = $this->exchangeRateRepository->find('XBT', 'ZAR');
@@ -86,7 +88,7 @@ class AutoTrader implements ErrorMessagesInterface
     public function buy()
     {
         //get my zar balance
-        if (($zarBalance = $this->bitXApi->getAccountBalance('ZAR')) === false) {
+        if (($zarBalance = $this->bitXApi->getZarAccountBalance()) === false) {
             $this->setErrors($this->bitXApi->getErrors());
             return null;
         }
@@ -113,14 +115,14 @@ class AutoTrader implements ErrorMessagesInterface
     public function sell()
     {
         //get my xbt balance
-        if (($xbtBalance = $this->bitXApi->getAccountBalance('XBT')) === false) {
+        if (($xbtBalance = $this->bitXApi->getXbtAccountBalance()) === false) {
             $this->setErrors($this->bitXApi->getErrors());
             return null;
         }
 
         //TODO, figure out why you can't sell your entire balance
         //place market order (instantly filled, not ask/bid)
-        if (($order = $this->bitXApi->placeSellMarketOrder('XBT', 'ZAR', $xbtBalance * 0.95)) === false) {
+        if (($order = $this->bitXApi->placeSellMarketOrder('XBT', 'ZAR', $xbtBalance * 0.98)) === false) {
             $this->setErrors($this->bitXApi->getErrors());
             return null;
         }

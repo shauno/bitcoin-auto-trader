@@ -10,14 +10,20 @@ class BitX implements ErrorMessagesInterface
     use ErrorMessageTrait;
 
     protected $client;
+    private $zarAccountId;
+    private $xbtAccountId;
     protected $auth = [];
 
     /**
      * @param Client $client
+     * @param string $zarAccountId
+     * @param string $xbtAccountId
      */
-    public function __construct(Client $client)
+    public function __construct(Client $client, string $zarAccountId, string $xbtAccountId)
     {
         $this->client = $client;
+        $this->zarAccountId = $zarAccountId;
+        $this->xbtAccountId = $xbtAccountId;
     }
 
     /**
@@ -34,26 +40,36 @@ class BitX implements ErrorMessagesInterface
     /**
      * Get a bitx account balance
      *
-     * @param string $asset
+     * @param string $accountId
      * @return bool|float
      */
-    public function getAccountBalance(string $asset)
+    protected function getAccountBalance(string $accountId)
     {
         try {
             $options = ['auth' => $this->auth];
             $result = $this->client->get('https://api.mybitx.com/api/1/balance', $options);
-            $balance = 0;
             foreach ($result->balance as $account) {
-                if ($account->asset === $asset) {
-                    $balance += $account->balance;
+                if ($account->account_id === $accountId) {
+                    return $account->balance;
                 }
             }
 
-            return $balance;
+            $this->addError('api', 'No account with provided accountId found');
+            return false;
         } catch (\Exception $e) {
             $this->addError('api', $e->getMessage());
             return false;
         }
+    }
+
+    public function getZarAccountBalance()
+    {
+        return $this->getAccountBalance($this->zarAccountId);
+    }
+
+    public function getXbtAccountBalance()
+    {
+        return $this->getAccountBalance($this->xbtAccountId);
     }
 
     /**
@@ -90,6 +106,8 @@ class BitX implements ErrorMessagesInterface
                     'pair' => $from_iso.$to_iso,
                     'type' => 'BUY',
                     'counter_volume' => round($amount, 2),
+                    'base_account_id' => $this->xbtAccountId,
+                    'counter_account_id' => $this->zarAccountId,
                 ]
             ];
             $order = $this->client->post('https://api.mybitx.com/api/1/marketorder', $options);
@@ -123,7 +141,9 @@ class BitX implements ErrorMessagesInterface
                 'form_params' => [
                     'pair' => $from_iso.$to_iso,
                     'type' => 'SELL',
-                    'base_volume' => $amount,
+                    'base_volume' => sprintf('%.8F', $amount),
+                    'base_account_id' => $this->xbtAccountId,
+                    'counter_account_id' => $this->zarAccountId,
                 ]
             ];
             $order = $this->client->post('https://api.mybitx.com/api/1/marketorder', $options);

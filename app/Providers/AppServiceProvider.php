@@ -32,7 +32,11 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind('BtcAutoTrader\Api\BitX', function() {
-            return (new BitX(new Client(new \GuzzleHttp\Client())))->setAuth(env('BITX_KEY'), env('BITX_SECRET'));
+            return (new BitX(
+                new Client(new \GuzzleHttp\Client()),
+                env('BITX_ZAR_ACCOUNT_ID'),
+                env('BITX_XBT_ACCOUNT_ID')
+            ))->setAuth(env('BITX_KEY'), env('BITX_SECRET'));
         });
 
         $this->app->bind('BtcAutoTrader\Orders\OrderRepositoryInterface', function() {

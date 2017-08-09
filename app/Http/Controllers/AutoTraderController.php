@@ -13,7 +13,12 @@ class AutoTraderController extends Controller
     public function trade(AutoTrader $autoTrader)
     {
         try {
-            $trade = $autoTrader->trade(env('BUY_GAP'), env('SELL_GAP'));
+            $trade = $autoTrader->trade(
+                env('BUY_GAP'),
+                env('SELL_GAP'),
+                env('BITX_ZAR_ACCOUNT_ID'),
+                env('BITX_XBT_ACCOUNT_ID')
+            );
 
             if ($autoTrader->hasErrors()) {
                 Log::warning(__METHOD__.'(): Errors found: '.$autoTrader->getErrors());
@@ -36,7 +41,14 @@ class AutoTraderController extends Controller
     public function instantBuyOrder(Request $request, AutoTrader $autoTrader)
     {
         if ($request->get('password') === env('INSTANT_ORDER_PASSWORD')) {
-            $autoTrader->buy();
+            $trade = $autoTrader->buy();
+
+            if($autoTrader->hasErrors()) {
+                Log::warning(__METHOD__.'(): Errors found: '.$autoTrader->getErrors());
+                return response($autoTrader->getErrors(), 400);
+            }
+
+            return response($trade);
         } else {
             return response('No, not for you', 403);
         }
@@ -45,7 +57,14 @@ class AutoTraderController extends Controller
     public function instantSellOrder(Request $request, AutoTrader $autoTrader)
     {
         if ($request->get('password') === env('INSTANT_ORDER_PASSWORD')) {
-            $autoTrader->sell();
+            $trade = $autoTrader->sell();
+
+            if($autoTrader->hasErrors()) {
+                Log::warning(__METHOD__.'(): Errors found: '.$autoTrader->getErrors());
+                return response($autoTrader->getErrors(), 400);
+            }
+
+            return response($trade);
         } else {
             return response('No, not for you', 403);
         }
