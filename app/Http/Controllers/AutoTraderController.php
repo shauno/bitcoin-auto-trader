@@ -40,7 +40,7 @@ class AutoTraderController extends Controller
 
     public function instantBuyOrder(Request $request, AutoTrader $autoTrader)
     {
-        if ($request->get('password') === env('INSTANT_ORDER_PASSWORD')) {
+        if (password_verify($request->get('password'), env('INSTANT_ORDER_PASSWORD'))) {
             $trade = $autoTrader->buy();
 
             if($autoTrader->hasErrors()) {
@@ -56,7 +56,7 @@ class AutoTraderController extends Controller
 
     public function instantSellOrder(Request $request, AutoTrader $autoTrader)
     {
-        if ($request->get('password') === env('INSTANT_ORDER_PASSWORD')) {
+        if (password_verify($request->get('password'), env('INSTANT_ORDER_PASSWORD'))) {
             $trade = $autoTrader->sell();
 
             if($autoTrader->hasErrors()) {
