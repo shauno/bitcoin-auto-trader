@@ -46,6 +46,7 @@ $.ajax({
                         yAxisID: 'y-axis-percent',
                         data: buyLine,
                         fill: true,
+                        borderDash: [6,3],
                         borderColor: '#FFFDB2',
                         backgroundColor: '#FFFDB2'
 
@@ -55,6 +56,7 @@ $.ajax({
                         yAxisID: 'y-axis-percent',
                         data: sellLine,
                         fill: false,
+                        borderDash: [6,3],
                         borderColor: '#ffcccc',
                         backgroundColor: '#ffcccc'
                     }
