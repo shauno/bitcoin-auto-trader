@@ -15,7 +15,7 @@
  */
 ?>
 <div style="width: 1200px; display: inline-block;">
-    <canvas id="chart-xbt-gap"></canvas>
+    <canvas id="chart-xbt-gap" data-buy="{{$percentageBuy}}" data-sell="{{$percentageSell}}"></canvas>
 </div>
 
 <div style="width: 150px; display: inline-block; vertical-align: top">
