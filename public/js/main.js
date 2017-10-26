@@ -45,7 +45,7 @@ $.ajax({
                         label: 'Buy Marker',
                         yAxisID: 'y-axis-percent',
                         data: buyLine,
-                        fill: true,
+                        fill: false,
                         borderDash: [6,3],
                         borderColor: '#FFFDB2',
                         backgroundColor: '#FFFDB2'
