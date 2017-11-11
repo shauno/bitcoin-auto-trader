@@ -43,7 +43,7 @@ $.ajax({
                         backgroundColor: '#eeeeee'
                     },
                     {
-                        label: '4 Hour Rolling Gap',
+                        label: '2 Hour Rolling Gap',
                         yAxisID: 'y-axis-percent',
                         data: usd_zar_rolling_gap,
                         fill: false,
