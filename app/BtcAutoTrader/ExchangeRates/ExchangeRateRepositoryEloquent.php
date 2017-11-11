@@ -63,17 +63,17 @@ class ExchangeRateRepositoryEloquent implements ExchangeRateRepositoryInterface
     /**
      * @inheritdoc
      */
-    public function getBuyGap(ExchangeRateLog $exchangeRate) : float
+    public function getBuyGap(ExchangeRate $exchangeRate) : float
     {
-        return $exchangeRate->rate / 2;
+        return $exchangeRate->getRate() / 2;
     }
 
     /**
      * @inheritdoc
      */
-    public function getSellGap(ExchangeRateLog $exchangeRate) : float
+    public function getSellGap(ExchangeRate $exchangeRate) : float
     {
-        return $exchangeRate->rate * 1.5;
+        return $exchangeRate->getRate() * 1.5;
     }
 
 }
