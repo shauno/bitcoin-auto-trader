@@ -61,9 +61,8 @@ class ExchangeRateReporter
                 $key = 'xbt_zar';
             } elseif($log->from_iso == 'USDZAR' && $log->to_iso == 'GAP') {
                 $key = 'usd_zar_rolling_gap';
-                $exchangeRate = $this->exchangeRateRepository->find($log->from_iso, $log->to_iso);
-                $group[date('Y-m-d H:i', $log->created_at->timestamp)]['usd_zar_rolling_buy_gap'] = $this->exchangeRateRepository->getBuyGap($exchangeRate);
-                $group[date('Y-m-d H:i', $log->created_at->timestamp)]['usd_zar_rolling_sell_gap'] = $this->exchangeRateRepository->getSellGap($exchangeRate);
+                $group[date('Y-m-d H:i', $log->created_at->timestamp)]['usd_zar_rolling_buy_gap'] = $this->exchangeRateRepository->getBuyGap($log);
+                $group[date('Y-m-d H:i', $log->created_at->timestamp)]['usd_zar_rolling_sell_gap'] = $this->exchangeRateRepository->getSellGap($log);
             }
 
             $group[date('Y-m-d H:i', $log->created_at->timestamp)][$key] = $log->rate;
