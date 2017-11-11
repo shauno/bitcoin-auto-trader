@@ -33,10 +33,6 @@
     </div>
 
     <div style="width: 400px; display: inline-block;">
-        <canvas id="chart-xbt-cny"></canvas>
-    </div>
-
-    <div style="width: 400px; display: inline-block;">
         <canvas id="chart-xbt-jpy"></canvas>
     </div>
 </div>

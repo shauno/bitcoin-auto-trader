@@ -132,7 +132,6 @@ function currencyGraph(from_iso, to_iso) {
     });
 }
 
-currencyGraph('XBT', 'CNY');
 currencyGraph('XBT', 'JPY');
 currencyGraph('XBT', 'USD');
 
