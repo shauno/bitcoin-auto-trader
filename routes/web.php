@@ -25,3 +25,5 @@ Route::get('/api/v1/xbt-gap', ['uses' => 'ExchangeRateGapController@index']);
 
 Route::post('/instant-order/buy', ['uses' => 'AutoTraderController@instantBuyOrder', 'as' => 'instant-buy-order']);
 Route::post('/instant-order/sell', ['uses' => 'AutoTraderController@instantSellOrder', 'as' => 'instant-sell-order']);
+
+Route::get('/usd-zar-rolling-average', ['uses' => 'ExchangeRateGapController@usdZarRollingAverage']);
