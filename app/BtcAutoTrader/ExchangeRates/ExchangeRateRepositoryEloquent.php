@@ -38,6 +38,7 @@ class ExchangeRateRepositoryEloquent implements ExchangeRateRepositoryInterface
             throw new \LogicException('Call to update() with model without and id');
         }
 
+        $exchangeRate->touch(); //forces the updated_at timestamp to be set and persisted
         $exchangeRate->save();
         return $exchangeRate;
     }
