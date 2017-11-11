@@ -29,4 +29,20 @@ interface ExchangeRateRepositoryInterface
      * @return mixed
      */
     public function log(ExchangeRate $exchangeRate) : ExchangeRateLog;
+
+    /**
+     * Return the calculated buy gap using the current USDZAR:GAP rate
+     *
+     * @param ExchangeRateLog $exchangeRate
+     * @return float
+     */
+    public function getBuyGap(ExchangeRateLog $exchangeRate) : float;
+
+    /**
+     * Return the calculated sell gap using the current USDZAR:GAP rate
+     *
+     * @param ExchangeRateLog $exchangeRate
+     * @return float
+     */
+    public function getSellGap(ExchangeRateLog $exchangeRate) : float;
 }

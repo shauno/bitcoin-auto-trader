@@ -46,7 +46,7 @@ class ExchangeRateReporter
         $list = (new ExchangeRateLog())
             ->where('created_at', '>=', date('Y-m-d H:i:s', $from_date))
             ->where('created_at', '<=', date('Y-m-d H:i:s', $to_date))
-            ->whereIn('to_iso', ['USD', 'ZAR'])
+            ->whereIn('to_iso', ['USD', 'ZAR', 'GAP'])
             ->orderBy('created_at', 'asc')
             ->get();
 
@@ -59,6 +59,10 @@ class ExchangeRateReporter
                 $key = 'xbt_usd';
             } elseif($log->from_iso == 'XBT' && $log->to_iso == 'ZAR') {
                 $key = 'xbt_zar';
+            } elseif($log->from_iso == 'USDZAR' && $log->to_iso == 'GAP') {
+                $key = 'usd_zar_rolling_gap';
+                $group[date('Y-m-d H:i', $log->created_at->timestamp)]['usd_zar_rolling_buy_gap'] = $this->exchangeRateRepository->getBuyGap($log);
+                $group[date('Y-m-d H:i', $log->created_at->timestamp)]['usd_zar_rolling_sell_gap'] = $this->exchangeRateRepository->getSellGap($log);
             }
 
             $group[date('Y-m-d H:i', $log->created_at->timestamp)][$key] = $log->rate;

@@ -1,15 +1,16 @@
 $.ajax({
     'url': 'api/v1/xbt-gap',
     'success': function(data) {
-        var usd = [], zar = [], percent=[], buyLine=[], sellLine=[], labels = [];
+        var usd = [], zar = [], percent=[], usd_zar_rolling_gap=[], buyLine=[], sellLine=[], labels = [];
 
         for(item in data) {
             usd[usd.length] = data[item].xbt_usd_in_zar;
             zar[zar.length] = data[item].xbt_zar;
             percent[percent.length] = data[item].percent;
+            usd_zar_rolling_gap[usd_zar_rolling_gap.length] = data[item].usd_zar_rolling_gap;
             labels[labels.length] = item;
-            buyLine[buyLine.length] = jQuery('#chart-xbt-gap').data('buy');
-            sellLine[sellLine.length] = jQuery('#chart-xbt-gap').data('sell');
+            buyLine[buyLine.length] = data[item].usd_zar_rolling_buy_gap;
+            sellLine[sellLine.length] = data[item].usd_zar_rolling_sell_gap;
         }
 
         new Chart(document.getElementById("chart-xbt-gap"), {
@@ -38,8 +39,16 @@ $.ajax({
                         yAxisID: 'y-axis-percent',
                         data: percent,
                         fill: false,
-                        borderColor: '#cccccc',
-                        backgroundColor: '#cccccc'
+                        borderColor: '#dcdcdc',
+                        backgroundColor: '#eeeeee'
+                    },
+                    {
+                        label: '4 Hour Rolling Gap',
+                        yAxisID: 'y-axis-percent',
+                        data: usd_zar_rolling_gap,
+                        fill: false,
+                        borderColor: '#cca6bd',
+                        backgroundColor: '#cca6bd'
                     },
                     {
                         label: 'Buy Marker',
