@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string created_at
  * @property string updated_at
  */
-class ExchangeRate extends Model
+class ExchangeRate extends Model implements HasRateInterface
 {
     /**
      * The attributes excluded from the model's JSON form.
@@ -55,9 +55,9 @@ class ExchangeRate extends Model
     /**
      * @return float
      */
-    public function getRate()
+    public function getRate() : float
     {
-        return $this->rate;
+        return (float)$this->rate;
     }
 
     /**

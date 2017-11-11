@@ -13,11 +13,19 @@ use Illuminate\Database\Eloquent\Model;
  * @property string created_at
  * @property string updated_at
  */
-class ExchangeRateLog extends Model
+class ExchangeRateLog extends Model implements HasRateInterface
 {
     protected $fillable = [
         'from_iso',
         'to_iso',
         'rate',
     ];
+
+    /**
+     * @return float
+     */
+    public function getRate() : float
+    {
+        return (float)$this->rate;
+    }
 }
