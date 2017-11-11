@@ -30,17 +30,14 @@ class AutoTrader implements ErrorMessagesInterface
     }
 
     /**
-     * @param float $buyGap Percent / 100 between exchanges to signal a buy order (eg 0.04 = 4%)
-     * @param float $sellGap Percent / 100 between exchanges to signal a sell order (eg 0.08 = 8%)
-     * @param $zarAccountId Luno ZAR account to use for the trade
-     * @param $xbtAccountId Luno XBT account to use for the trade
      * @return Order|null
      */
-    public function trade(float $buyGap = 0.02, float $sellGap = 0.06, $zarAccountId, $xbtAccountId) : ?Order
+    public function trade() : ?Order
     {
         $xbtUsd = $this->exchangeRateRepository->find('XBT', 'USD');
         $xbtZar = $this->exchangeRateRepository->find('XBT', 'ZAR');
         $usdZar = $this->exchangeRateRepository->find('USD', 'ZAR');
+        $usdZarGap = $this->exchangeRateRepository->find('USDZAR', 'GAP');
 
         if (!$xbtUsd->sanityCheck() || !$xbtZar->sanityCheck() || !$usdZar->sanityCheck()) {
             //todo, more granular check and reporting
@@ -50,6 +47,9 @@ class AutoTrader implements ErrorMessagesInterface
 
         $percentDifference = $this->calculateDifference($xbtUsd, $xbtZar, $usdZar);
         $lastOrder = $this->orderRepository->getLastOrder();
+
+        $buyGap = $this->exchangeRateRepository->getBuyGap($usdZarGap) / 100;
+        $sellGap = $this->exchangeRateRepository->getSellGap($usdZarGap) / 100;
 
         //TODO, consider only buying if price in USD is trending up. ZAR might just be selling off more aggressively and then we're buying in on the way down :(
         if ($percentDifference <= $buyGap && (is_null($lastOrder) || $lastOrder->getType() != 'BUY')) { //buy buy buy!
