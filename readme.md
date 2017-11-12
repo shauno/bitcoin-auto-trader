@@ -5,12 +5,17 @@
 **WARNING:** This script WILL place instantly filled buy and sell orders for your
 bitcoins. It will kick your dog and sleep with your wife. Don't use it :neutral_face:
 
-An experiment in predicting the bitcoin market in South Africa. There appears
-to be a somewhat consistent arbitrage gap of ~6% between the US exchanges, and
-BitX (Luno) South Africa. If that gap closes rapidly, there's a good chance the
-local Bitcoin price will rise to open the gap again.
+An experiment in predicting the bitcoin market in South Africa. ~There appears
+to be a somewhat consistent arbitrage gap of 6% between the US exchanges, and
+BitX (Luno) South Africa.~ There **was** a pretty consistent 6% arbitrage gap in the
+early days. That gap can now be between 1%-25%. But the if the current gap closes
+rapidly, there's a good chance the local Bitcoin price will rise to open the gap again.
 
-There's definitely more to it, and more markers should be added. But for now
+This script now monitors the gap and tracks a 2 hour rolling average. The buy and sell
+markers are calculated off the rolling average requiring much less monitoring and config
+tweaking depending on what dumb thing some world leader says.
+
+There's definitely more to it than this, and more markers should be added. But for now
  ¯\\\_(ツ)_/¯
 
 Setup
@@ -33,12 +38,12 @@ Setup
 
     `$ cp .env.sample .env`
     
-* Edit `.env` with your DB and BitX API settings
+* Edit `.env` with your DB and ~~BitX~~ Luno API settings
 
-* Setup the exchange rate and auto trading URLs as cron jobs (TODO, use Lumen's
-scheduler for this)
+* Setup the bulk exchange rate tracking URL as a cron job
 
-    * `POST /api/v1/exchange-rates/USD/ZAR`
-    * `POST /api/v1/exchange-rates/XBT/USD`
-    * `POST /api/v1/exchange-rates/XBT/ZAR`
+    * `POST /api/v1/exchange-rates/bulk-update`
+    
+* Setup the auto trade URL as a cron job
+
     * `POST /api/v1/auto-trade`
