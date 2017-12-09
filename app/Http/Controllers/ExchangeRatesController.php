@@ -14,17 +14,19 @@ class ExchangeRatesController
 {
     public function index(Request $request, ExchangeRateReporter $exchangeRateReporter)
     {
-
         if (!$request->get('from_iso') || !$request->get('to_iso')) {
             dd('Need from_iso and to_iso'); //TODO, use proper error handling dumbass
         }
 
-        $timeBack = $request->get('time_back') ?? '12 hours';
+        //If the 'from_date' is passed we add a second to it to make sure not to get the last record (maybe the client should be responsible for this, but meh
+        $from_date = $request->get('from_date')
+            ? strtotime($request->get('from_date')) + 1
+            : strtotime('-12 hours');
 
         return $exchangeRateReporter->getExchangeRate(
             $request->get('from_iso'),
             $request->get('to_iso'),
-            strtotime('-'.$timeBack),
+            $from_date,
             time()
         );
     }

@@ -1,3 +1,5 @@
+var mainChart, otherCharts = {};
+
 $.ajax({
     'url': 'api/v1/xbt-gap',
     'success': function(data) {
@@ -13,7 +15,7 @@ $.ajax({
             sellLine[sellLine.length] = data[item].usd_zar_rolling_sell_gap;
         }
 
-        new Chart(document.getElementById("chart-xbt-gap"), {
+        mainChart = new Chart(document.getElementById("chart-xbt-gap"), {
             type: 'line',
             data: {
                 labels: labels,
@@ -93,8 +95,40 @@ $.ajax({
                 }
             }
         });
+
+        setInterval(function() {
+            updateGapChart();
+        }, 60000);
     }
 });
+
+function updateGapChart() {
+    var last_date = mainChart.data.labels[mainChart.data.labels.length-1];
+
+    $.ajax({
+        'url': 'api/v1/xbt-gap?from_date='+last_date,
+        'success': function (data) {
+
+            for(label in data) {
+                mainChart.data.labels.push(label);
+
+                mainChart.data.datasets[0].data.push(data[label].xbt_usd_in_zar);
+                mainChart.data.datasets[1].data.push(data[label].xbt_zar);
+                mainChart.data.datasets[2].data.push(data[label].percent);
+                mainChart.data.datasets[3].data.push(data[label].usd_zar_rolling_gap);
+                mainChart.data.datasets[4].data.push(data[label].usd_zar_rolling_buy_gap);
+                mainChart.data.datasets[5].data.push(data[label].usd_zar_rolling_sell_gap);
+
+                mainChart.data.labels.splice(0, 1);
+                mainChart.data.datasets.forEach(function(dataset) {
+                    dataset.data.splice(0, 1);
+                });
+
+                mainChart.update();
+            }
+        }
+    });
+}
 
 function currencyGraph(from_iso, to_iso) {
     $.ajax({
@@ -105,8 +139,7 @@ function currencyGraph(from_iso, to_iso) {
                 value[value.length] = data[item].rate;
                 labels[labels.length] = data[item].created_at;
             }
-
-            new Chart(document.getElementById('chart-'+from_iso.toLowerCase()+'-'+to_iso.toLowerCase()), {
+            otherCharts[from_iso+to_iso] = new Chart(document.getElementById('chart-'+from_iso.toLowerCase()+'-'+to_iso.toLowerCase()), {
                 type: 'line',
                 data: {
                     labels: labels,
@@ -128,10 +161,31 @@ function currencyGraph(from_iso, to_iso) {
                     }
                 }
             });
+
+            setInterval(function() {
+                updateCurrencyGraph(from_iso, to_iso);
+            }, 120000);
+        }
+    });
+}
+
+function updateCurrencyGraph(from_iso, to_iso) {
+    var chart = otherCharts[from_iso+to_iso];
+    var last_date = chart.data.labels[chart.data.labels.length-1];
+
+    $.ajax({
+        'url': 'api/v1/exchange-rates?from_iso='+from_iso+'&to_iso='+to_iso+'&from_date='+last_date,
+        'success': function (data) {
+            for(var i=0; i<data.length; i++) {
+                chart.data.labels.push(data[i].created_at);
+                chart.data.datasets[0].data.push(data[i].rate);
+                chart.data.labels.splice(0, 1);
+                chart.data.datasets[0].data.splice(0, 1);
+                chart.update();
+            }
         }
     });
 }
 
 currencyGraph('XBT', 'JPY');
 currencyGraph('XBT', 'USD');
-

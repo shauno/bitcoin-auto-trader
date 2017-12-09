@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use BtcAutoTrader\ExchangeRates\ExchangeRateReporter;
+use Illuminate\Http\Request;
 
 class ExchangeRateGapController
 {
-    public function index(ExchangeRateReporter $exchangeRateReporter)
+    public function index(Request $request, ExchangeRateReporter $exchangeRateReporter)
     {
-        return $exchangeRateReporter->getExchangeRateGap(strtotime('-12 hours'), time());
+        $from_date = $request->get('from_date')
+            ? strtotime($request->get('from_date')) + 60
+            : strtotime('-12 hours');
+
+        return $exchangeRateReporter->getExchangeRateGap($from_date, time());
     }
 
     public function usdZarRollingAverage(ExchangeRateReporter $exchangeRateReporter)
