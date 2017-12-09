@@ -92,6 +92,10 @@ $.ajax({
                             id: 'y-axis-percent'
                         }
                     ]
+                },
+                tooltips: {
+                    enabled: true,
+                    mode: 'index'
                 }
             }
         });
