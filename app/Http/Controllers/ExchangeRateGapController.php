@@ -18,7 +18,7 @@ class ExchangeRateGapController
 
     public function usdZarRollingAverage(ExchangeRateReporter $exchangeRateReporter)
     {
-         $list = $exchangeRateReporter->getExchangeRateGap(strtotime('-6 hours'), time());
+         $list = $exchangeRateReporter->getExchangeRateGap(strtotime('-12 hours'), time());
 
          $sum = 0;
          foreach ($list as $rate) {
