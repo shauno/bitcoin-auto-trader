@@ -55,8 +55,8 @@ class AutoTrader implements ErrorMessagesInterface
         if ($percentDifference <= $buyGap && (is_null($lastOrder) || $lastOrder->getType() != 'BUY')) { //buy buy buy!
             return $this->buy();
         } else if ($percentDifference >= $sellGap && (is_null($lastOrder) || $lastOrder->getType() != 'SELL')) { //sell sell sell!
-            //make sure the rate is not actually worse than when we bought
-            if ($lastOrder && $xbtZar->getRate() <= $lastOrder->getRate()) {
+            //make sure the rate is not actually worse than when we bought (plus a 2% buffer for fees)
+            if ($lastOrder && ($xbtZar->getRate() <= ($lastOrder->getRate() * 1.02))) {
                 $this->addError('rate', 'The current buy rate is worse than what was paid');
                 return null;
             }
