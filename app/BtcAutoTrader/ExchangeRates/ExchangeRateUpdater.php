@@ -58,7 +58,11 @@ class ExchangeRateUpdater implements ErrorMessagesInterface
 
         $return = new Collection();
         foreach ($exchangeRates as $exchangeRate) {
-            $return->push($this->update($exchangeRate->getFromIso(), $exchangeRate->getToIso()));
+            try {
+                $return->push($this->update($exchangeRate->getFromIso(), $exchangeRate->getToIso()));
+            } catch (\Exception $e) {
+                //TODO consider reporting this in the collection somehow?
+            }
         }
 
         return $return;
