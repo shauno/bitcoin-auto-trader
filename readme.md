@@ -47,3 +47,27 @@ Setup
 * Setup the auto trade URL as a cron job
 
     * `POST /api/v1/auto-trade`
+    
+### Setup via docker
+
+- Run composer install \
+  `$ docker run --rm --interactive --tty --volume $PWD:/app composer install`
+
+- Bring up the containers \
+  `$ docker-compose up --build`
+
+- Set application environment variables however you wish. The easiest option for
+dev is to copy the `/env.sample` to `.env` and set the appropriate properties
+
+- Create encryption key \
+  `$ docker-compose exec app php artisan key:generate`
+
+- Create the DB \
+  `$ docker-compose exec app php artisan migrate`
+  
+- Seed the DB \
+  `$ docker-compose exec app php artisan db:seed`
+  
+- Browse to: \
+  http://btc-auto-trader.localtest.me:8080
+
