@@ -149,7 +149,7 @@ function currencyGraph(from_iso, to_iso) {
                     labels: labels,
                     datasets: [
                         {
-                            label: to_iso,
+                            label: from_iso +'/'+to_iso,
                             data: value,
                             fill: false,
                         }
@@ -193,3 +193,4 @@ function updateCurrencyGraph(from_iso, to_iso) {
 
 currencyGraph('XBT', 'JPY');
 currencyGraph('XBT', 'USD');
+currencyGraph('USD', 'ZAR');
