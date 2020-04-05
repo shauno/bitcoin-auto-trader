@@ -51,10 +51,12 @@ class ExchangeRateReporter
             ->get();
 
         $group = [];
+        $usdZar = null; //stores the closet usd/zar rate to use (not fetched at the same frequency as the crypto pairs)
 
         foreach ($list as $log) {
             if($log->from_iso == 'USD' && $log->to_iso == 'ZAR') {
                 $key = 'usd_zar';
+                $usdZar = $usdZar ?? $log->rate; //get the first possible usd/zar rate we have
             } elseif($log->from_iso == 'XBT' && $log->to_iso == 'USD') {
                 $key = 'xbt_usd';
             } elseif($log->from_iso == 'XBT' && $log->to_iso == 'ZAR') {
@@ -70,8 +72,9 @@ class ExchangeRateReporter
 
         $rates = [];
         foreach ($group as $date => $list) {
-            if (isset($list['usd_zar'], $list['xbt_usd'])) {
-                $xbtUsdInZar = $list['usd_zar'] * $list['xbt_usd']; //calc the equivalent zar price of a usd coin
+            $usdZar = $list['usd_zar'] ?? $usdZar; //use the closest previous usd/zar rate fetched
+            if (isset($usdZar, $list['xbt_usd'], $list['xbt_zar'])) {
+                $xbtUsdInZar = $usdZar * $list['xbt_usd']; //calc the equivalent zar price of a usd coin
                 $rates[$date] = $list + [
                     'xbt_usd_in_zar' => $xbtUsdInZar,
                     'percent' => ($list['xbt_zar'] - $xbtUsdInZar) / $list['xbt_zar'] * 100,
