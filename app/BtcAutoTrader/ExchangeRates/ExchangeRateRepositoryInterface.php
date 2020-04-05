@@ -12,6 +12,13 @@ interface ExchangeRateRepositoryInterface
     public function findAll() :Collection;
 
     /**
+     * Find rates that haven't been updated since their `frequency`
+     *
+     * @return Collection
+     */
+    public function findForUpdate() :Collection;
+
+    /**
      * @param string $from_iso
      * @param string $to_iso
      * @return ExchangeRate|null

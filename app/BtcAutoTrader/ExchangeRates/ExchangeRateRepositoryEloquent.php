@@ -15,6 +15,16 @@ class ExchangeRateRepositoryEloquent implements ExchangeRateRepositoryInterface
     }
 
     /**
+     * @return Collection
+     */
+    public function findForUpdate() :Collection
+    {
+        return (new ExchangeRate())
+            ->whereRaw('DATE_ADD(updated_at, INTERVAL frequency MINUTE) <= CURRENT_TIMESTAMP()')
+            ->get();
+    }
+
+    /**
      * @param string $from_iso
      * @param string $to_iso
      * @return ExchangeRate|null

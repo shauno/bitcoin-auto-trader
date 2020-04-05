@@ -39,6 +39,7 @@ class AutoTrader implements ErrorMessagesInterface
         $usdZar = $this->exchangeRateRepository->find('USD', 'ZAR');
         $usdZarGap = $this->exchangeRateRepository->find('USDZAR', 'GAP');
 
+        // TODO, these will need to be updated to understand the new exchange_rate.frequency (but trading isn't enabled for now)
         if (!$xbtUsd->sanityCheck() || !$xbtZar->sanityCheck() || !$usdZar->sanityCheck()) {
             //todo, more granular check and reporting
             $this->addError('exchange_rate', 'One or more exchange rates failed the sanity check');

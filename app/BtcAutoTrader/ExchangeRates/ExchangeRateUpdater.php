@@ -54,7 +54,7 @@ class ExchangeRateUpdater implements ErrorMessagesInterface
      */
     public function bulkUpdate() : Collection
     {
-        $exchangeRates = $this->exchangeRateRepository->findAll();
+        $exchangeRates = $this->exchangeRateRepository->findForUpdate();
 
         $return = new Collection();
         foreach ($exchangeRates as $exchangeRate) {
