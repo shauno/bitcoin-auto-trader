@@ -70,6 +70,17 @@ class ExchangeRateReporter
             $group[date('Y-m-d H:i', $log->created_at->timestamp)][$key] = $log->rate;
         }
 
+        //if there is no usd/zar rate in the period get the previous rate no matter how far back it was
+        if (!$usdZar) {
+            $usdZar = (new ExchangeRateLog())
+                ->where('from_iso', 'USD')
+                ->where('to_iso','ZAR')
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            $usdZar = $usdZar->rate;
+        }
+
         $rates = [];
         foreach ($group as $date => $list) {
             $usdZar = $list['usd_zar'] ?? $usdZar; //use the closest previous usd/zar rate fetched
